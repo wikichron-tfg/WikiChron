@@ -38,8 +38,9 @@ debug = not production
 
 # get csv data location (data/ by default)
 global data_dir;
+csv_server = 'http://wikis.akronix.es/wiki_dumps/csv/'
 if not 'WIKICHRON_DATA_DIR' in os.environ:
-    os.environ['WIKICHRON_DATA_DIR'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
+    os.environ['WIKICHRON_DATA_DIR'] = csv_server
 data_dir = os.environ['WIKICHRON_DATA_DIR']
 
 # global app config
@@ -72,10 +73,13 @@ tabs = [
 available_metrics = lib.get_available_metrics()
 
 def get_available_wikis(data_dir):
-    wikis = glob.glob(os.path.join(data_dir,'*.csv'))
-    for i, wiki in enumerate(wikis):
-        base_filename = os.path.basename(wiki)
-        wikis[i] = os.path.splitext(base_filename)[0]
+    wikis = set()
+    import requests
+    r = requests.get(data_dir)
+    import re
+    matches = re.findall('([\w.-]+)\.csv',r.text)
+    for match in matches:
+        wikis.add(match)
     return wikis
 
 def set_layout():
