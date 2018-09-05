@@ -204,7 +204,6 @@ def metrics_tab(metrics):
             style={'color': 'white'},
             id='metrics-tab-container',
             ),
-        #~ select_time_axis_control(),
         ],
         id='metrics-tab'
     );
@@ -231,41 +230,81 @@ def selection_result_container():
         return html.Div(id='sidebar-selection', style={'display': 'none'})
 
 
+def test_tabs(wikis, metrics):
+
+    tabs_style={
+                'width': '50%',
+                'height': '70px',
+                'borderRadius': '3px',
+                'backgroundColor': '#072146',
+                'borderLeftStyle': 'none',
+                'borderRightStyle': 'none',
+                'fontSize': '18px',
+                'lineHeight': '21px',
+                'justifyContent': 'center',
+                'flexDirection': 'column'
+                };
+
+    dcc_wikis_tab = dcc.Tab(label= 'WIKIS', style=tabs_style, className='side-bar-tab', selected_className='side-bar-selected-tab', children=wikis_tab(wikis))
+
+    dcc_metrics_tab = dcc.Tab(label= 'METRICS', style=tabs_style, className='side-bar-tab', selected_className='side-bar-selected-tab', children=metrics_tab(metrics))
+
+    return html.Div([
+        dcc.Tabs(id='side-bar-tabs',
+                children=[
+                    dcc_wikis_tab,
+                    dcc_metrics_tab,
+                ],
+                vertical=False,
+                style={
+                    'width': '100%',
+                    'textAlign': 'center',
+                    'border': 'none',
+                },
+        )
+]);
+
 def generate_tabs(wikis, metrics):
-    return ([gdc.Tabs(
-                        tabs=[
-                            {'value': 'wikis', 'label': 'WIKIS'},
-                            {'value': 'metrics', 'label': 'METRICS'}
+
+    tabs_style={
+                'display' : 'flex',
+                'width': '50%',
+                'height': '70px',
+                'borderRadius': '3px',
+                'backgroundColor': '#072146',
+                'borderLeftStyle': 'none',
+                'borderRightStyle': 'none',
+                'fontSize': '18px',
+                'lineHeight': '21px',
+                'justifyContent': 'center',
+                'flexDirection': 'column'
+                };
+
+    selected_tab_style = {
+        'backgroundColor': '#004481'
+    }
+
+    dcc_wikis_tab = dcc.Tab(label='WIKIS', style=tabs_style, className='side-bar-tab', selected_className='side-bar-selected-tab', selected_style= selected_tab_style,
+            children=[html.P('WIKIS')])
+
+    dcc_metrics_tab = dcc.Tab(label='METRICS', style=tabs_style, className='side-bar-tab', selected_className='side-bar-selected-tab', selected_style=selected_tab_style,
+            children=[html.P('METRICS')])
+
+
+    return (dcc.Tabs(id='side-bar-tabs',
+                        children=[
+                            dcc_wikis_tab,
+                            dcc_metrics_tab
                         ],
-                        value='wikis',
-                        id='side-bar-tabs',
                         vertical=False,
-                        selectedTabStyle={
-                            'backgroundColor': '#004481',
-                        },
-                        selectedTabClassName='side-bar-selected-tab',
                         style={
                             'width': '100%',
                             'textAlign': 'center',
                             'border': 'none',
                         },
-                        tabsStyle={
-                            'width': '50%',
-                            'height': '70px',
-                            'borderRadius': '3px',
-                            'backgroundColor': '#072146',
-                            'borderLeftStyle': 'none',
-                            'borderRightStyle': 'none',
-                            'fontSize': '18px',
-                            'lineHeight': '21px',
-                            'justifyContent': 'center',
-                            'flexDirection': 'column'
-                        },
-                        tabsClassName='side-bar-tab',
-                        ),
-                    wikis_tab(wikis),
-                    metrics_tab(metrics)
-            ]);
+
+                    ),
+            );
 
 
 def generate_side_bar(wikis, metrics):
@@ -274,33 +313,17 @@ def generate_side_bar(wikis, metrics):
             fold_button(),
             html.Div(id='side-bar-content',
                 children = [
-                    #~ html.Div(style={'backgroundColor': '#072146', 'height': '15px'}),
-                    ] + generate_tabs(wikis, metrics) +
-                    [compare_button(),
+                    #~ generate_tabs(wikis, metrics),
+                    test_tabs(wikis, metrics),
+                    compare_button(),
                     selection_result_container()
-                    ]
+                ]
             )
         ]
     );
 
 
 def bind_callbacks(app):
-
-    @app.callback(Output('wikis-tab', 'style'),
-                   [Input('side-bar-tabs', 'value')])
-    def update_wikis_tab_visible(tab_selection):
-        if tab_selection == 'wikis':
-            return {'display':'block'}
-        else:
-            return {'display':'none'}
-
-    @app.callback(Output('metrics-tab', 'style'),
-               [Input('side-bar-tabs', 'value')])
-    def update_metrics_tab_visible(tab_selection):
-        if tab_selection == 'metrics':
-            return {'display':'block'}
-        else:
-            return {'display':'none'}
 
     # Note that we need one State parameter for each category metric that is created dynamically
     @app.callback(Output('sidebar-selection', 'children'),
