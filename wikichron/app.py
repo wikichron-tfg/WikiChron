@@ -351,7 +351,7 @@ def set_up_app(app):
     return
 
 
-def start_app(app):
+def init_app(app):
 
     # start auxiliar servers:
     start_js_server()
@@ -370,18 +370,21 @@ def run(app):
     app.run_server(debug=debug, port=port)
     return
 
-# create and config Dash instance
-app = create_app()
-
-# set layout, import startup js and bind callbacks
-set_up_app(app)
-
-# start Dash instance
-start_app(app)
 
 print ('This is __name__: {}'.format(__name__))
 if __name__ == '__main__':
+    # create and config Dash instance
+    app = create_app()
+
+    #~ # set layout, import startup js and bind callbacks
+    set_up_app(app)
+
+    #~ # init auxiliar servers & deps
+    init_app(app)
+
     run(app)
 
-else:
-    server = app.server
+#~ else:
+    #~ server = app.server
+
+
