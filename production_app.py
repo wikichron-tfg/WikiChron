@@ -1,4 +1,4 @@
-from app import create_app, set_up_app, init_app, run
+from wikichron.app import create_app, set_up_app, init_app
 
 # create and config Dash instance
 app = create_app()
@@ -9,5 +9,4 @@ set_up_app(app)
 # init auxiliar servers & deps
 init_app(app)
 
-
-run(app)
+wikichron = app.server

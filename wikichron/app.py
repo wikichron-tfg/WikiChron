@@ -376,15 +376,11 @@ if __name__ == '__main__':
     # create and config Dash instance
     app = create_app()
 
-    #~ # set layout, import startup js and bind callbacks
+    # set layout, import startup js and bind callbacks
     set_up_app(app)
 
-    #~ # init auxiliar servers & deps
+    # init auxiliar servers & deps
     init_app(app)
 
     run(app)
-
-#~ else:
-    #~ server = app.server
-
 
