@@ -790,9 +790,9 @@ def edition_on_pages(data, index):
     before = pd.to_datetime(0)
     j = -1
     for i, v in z.iteritems(): 
-        i = list(i)
-        current = i[0]
-        p = i[1]
+        i = list(i)#lsita con timestamp y bins
+        current = i[0]#fecha
+        p = i[1]# untervalo
         p = p.split(']')[0]
         p = p.split('(')[1]
         p = p.split(',')
@@ -802,18 +802,15 @@ def edition_on_pages(data, index):
         num_max = (num_max) 
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
-        while (resta > 31 and before != pd.to_datetime(0)):
-            j = j+1
-            resta = resta-31
+        if (resta > 31 and before != pd.to_datetime(0)):
+            aux= int(resta / 31)
+            j = j + aux
+            resta = resta- (31 * aux)
         if (before != current):
             j = j +1
             before = current
-        for num in range(num_min,num_max+1):
-            graphs_list[j][num] = v
-    wiki_by_metrics = []
-    for metric_idx in range(maxEditors+1):
-            metric_row = [graphs_list[wiki_idx].pop(0) for wiki_idx in range(len(graphs_list))]
-            wiki_by_metrics.append(metric_row) 
+        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
+    wiki_by_metrics = np.transpose(graphs_list);
     return [index,list(range(maxEditors)),wiki_by_metrics, z, 'Heatmap']
 
 def revision_on_pages(data, index):
