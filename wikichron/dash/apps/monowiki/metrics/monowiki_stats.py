@@ -377,7 +377,7 @@ def edition_on_type_pages_extends_rest(data, index):
     rest.name='Other pages'
     return [file,mediaWiki,template,category,rest,'Bar']
 
-############################ METRIC 3 #################################################################################################
+############################ Users by tenure #################################################################################
 
 def users_first_edit_between_1_3_months_ago(data, index):
     '''
@@ -424,7 +424,7 @@ def users_first_edit(data, index):
     
     return [this_month, one_three, four_six, six_twelve, more_twelve, 'Bar']
 
-############################ METRIC 4 #################################################################################################
+############################ Users by the date of the last edit ###########################################################################
 
 def users_last_edit_1_month_ago(data, index):
     '''
@@ -472,7 +472,7 @@ def users_last_edit(data, index):
 
     return [this_month, one_month, two_three_months, four_six_months, more_six_months, 'Bar']
 
-############################ METRIC 5 #################################################################################################
+############################ Active editors by experience #####################################################################
 
 def users_number_of_edits_between_1_and_4(data, index):
     '''
@@ -539,7 +539,7 @@ def users_number_of_edits_abs(data, index):
  
     return [new_users, one_four, between_5_24, between_25_99, highEq_100, 'Bar']
 
-############################ METRICS 9 and 10 #################################################################################################
+############################ Active editors by namespace #####################################################################################
 
 def users_article_page(data, index):
     '''
@@ -606,9 +606,7 @@ def users_in_namespaces(data, index):
 
     return [other_page, main_page, articletalk_page, user_page, template_page, usertalk_page, 'Bar']
 
-############################ METRICS TO CALCULATE THE PARTICIPATION LEVEL OF DIFFERENT USER CATEGORIES #########################################
-
-### 1) NUMBER OF EDITIONS PER USER CATEGORY EACH MONTH ###
+############################ Edits by editor experience (absolute and relative) #########################################
 
 def number_of_edits_by_beginner_users(data, index):
     '''
@@ -712,6 +710,8 @@ def percentage_of_edits_by_category(data, index):
     pctage_category5.name = "% of edits by new users"
 
     return [pctage_category5, pctage_category1, pctage_category2, pctage_category3, pctage_category4, 'Bar']
+
+############################# Returning and surviving new editors ############################################
 
 def returning_new_editor(data, index):
     data.reset_index(drop=True, inplace=True)
@@ -1020,7 +1020,7 @@ def changes_in_absolute_size_of_editor_classes(data, index):
                         graphs_list[i][j] = concatenate.iloc[i, j] - concatenate.iloc[i, j - 1]
     return[months.index, classes, graphs_list, concatenate, 'Heatmap']
 
-########################### FILLED-AREA CHART METRICS ###########################################
+########################### % Of edits by % of users (accumulated and monthly) ###########################################
 
 def contributor_pctg_per_contributions_pctg(data, index):
     """
