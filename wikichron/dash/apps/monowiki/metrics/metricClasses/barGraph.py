@@ -36,11 +36,12 @@ class BarGraph(Metric):
         """
         graphs_list = []
         num_submetrics = len(self.data)
-
-        for idx in range(num_submetrics - 1):
-            graphs_list.append([])
         
-        for submetric in range(num_submetrics - 1):
+        for idx in range(num_submetrics):
+            print(idx)
+            graphs_list.append([])
+
+        for submetric in range(num_submetrics):
             submetric_data = self.data[submetric]
             if is_relative_time:
                 x_axis = list(range(len(submetric_data.index))) # relative to the age of the wiki in months
