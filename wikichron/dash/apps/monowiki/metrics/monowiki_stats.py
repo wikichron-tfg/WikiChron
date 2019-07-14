@@ -293,7 +293,7 @@ def edition_on_type_pages(data, index):
     userP.name='User pages'
     talkPU.name='User talk pages'
     rest.name='Other pages'
-    return [articles,talkPA,userP,talkPU,rest]
+    return [articles, talkPA, talkPU, userP, rest]
 
 def edition_on_type_pages_extends_rest(data, index):
     data=filter_anonymous(data)
@@ -491,7 +491,7 @@ def type_page_users_edit(data, index):
     usertalk_page.name = 'User talk pages'
     other_page.name = 'Other pages'
 
-    return [other_page, main_page, articletalk_page, user_page, template_page, usertalk_page]
+    return [main_page, articletalk_page, usertalk_page, user_page, template_page, other_page]
 
 ############################ METRICS TO CALCULATE THE PARTICIPATION LEVEL OF DIFFERENT USER CATEGORIES #########################################
 
