@@ -311,11 +311,10 @@ def generate_main_content(wikis_arg, metrics_arg, relative_time_arg,
     share_url_path = f'{server_config["PREFERRED_URL_SCHEME"]}://{server_config["APP_HOSTNAME"]}{mode_config["DASH_BASE_PATHNAME"]}{query_string}'
     download_url_path = f'{server_config["PREFERRED_URL_SCHEME"]}://{server_config["APP_HOSTNAME"]}{mode_config["DASH_DOWNLOAD_PATHNAME"]}{query_string}'
 
-    selection_url = f'{mode_config["HOME_MODE_PATHNAME"]}selection{query_string}'
+    selection_url = f'{mode_config["HOME_MODE_PATHNAME"]}selection/{query_string}'
 
     return html.Div(id='main',
         className='control-text',
-        style={'width': '100%'},
         children=[
 
             main_header(),
@@ -382,7 +381,11 @@ def bind_callbacks(app):
         metrics = extract_metrics_objs_from_metrics_codes(selection['metrics'])
 
         # get time axis of the oldest one and use it as base numbers for the slider:
+<<<<<<< HEAD
         time_axis_index = data_controller.generate_longest_time_axis([ metric for metric in metrics ],
+=======
+        time_axis_index = data_controller.generate_and_store_time_axis([ metric for metric in metrics ],
+>>>>>>> improvementsMonowiki
                                                     relative_time)
 
         if relative_time:

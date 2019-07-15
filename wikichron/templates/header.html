@@ -3,7 +3,7 @@
       <div id='logo-container'>
         <div id="img-logo-header-container">
           <a href="/">
-            <img height="40px" src={{ logo_src }} />
+            <img height="40px" src={{ logo_src if logo_src else url_for('static', filename='assets/logo_wikichron_simple.svg') }} />
           </a>
         </div>
         <a href="/upload" class="btn btn-link add-wiki-anchor">
@@ -22,9 +22,6 @@
 
         <div class='intro-container'>
             <div id='selection-header-paragraph-div'>
-<!--
-                <img src={{ paragraph_img_src }} />
--->
                 <p id="selection-header-paragraph">{{ header_paragraph }}</p>
             </div>
         </div>

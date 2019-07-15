@@ -13,10 +13,10 @@
 from .metric import Metric, MetricCategory
 from . import classic_stats
 from . import monowiki_stats
-from .metricClasses.heatMap import HeatMap
-from .metricClasses.barGraph import BarGraph
-from .metricClasses.areaChart import AreaChart
-from .metricClasses.lineGraph import LineGraph
+from .metricClasses.HeatMap import HeatMap
+from .metricClasses.BarGraph import BarGraph
+from .metricClasses.AreaChart import AreaChart
+from .metricClasses.LineGraph import LineGraph
 
 def generate_classic_metrics():
     metrics = []
@@ -60,6 +60,10 @@ def generate_classic_metrics():
     metrics.append(LineGraph('edits_per_pages_accum', 'Total edits per page', MetricCategory.RATIOS, classic_stats.edits_per_pages_accum, 'Number of total edits per number of total pages'))
     metrics.append(LineGraph('percentage_edits_by_anonymous_accum', 'Total anonymous edits (%)', MetricCategory.RATIOS, classic_stats.percentage_edits_by_anonymous_accum, 'Percentage, per month, of edits made by anonymous users of the total edits.'))
 
+    # RETENTION
+    metrics.append(LineGraph('returning_new_editors', 'Returning new editors', MetricCategory.RETENTION, classic_stats.returning_new_editors, "Number of new users who completes at least two edit sessions (60') within the first 30 days since registration. Based on a WMF's metric."))
+    metrics.append(LineGraph('surviving_new_editors', 'Surviving new editors', MetricCategory.RETENTION, classic_stats.surviving_new_editors, "Numer of new users who completes at least one edit within the first 30 days since registration and also completes another edit in the survival period, (i.e. the following 30 days). Based on a WMF's metric."))
+
     # DISTRIBUTION
     metrics.append(LineGraph('gini_accum', 'Gini coefficient', MetricCategory.DISTRIBUTION, classic_stats.gini_accum, 'Gini coefficient (accumulated)'))
     metrics.append(LineGraph('ratio_10_90', '10:90 ratio', MetricCategory.DISTRIBUTION, classic_stats.ratio_10_90, 'Contributions of the top ten percent more active users between the 90% percent less active'))
@@ -81,6 +85,7 @@ def generate_monowiki_metrics():
     metrics.append(BarGraph('edition_on_type_pages', 'Edits in popular namespaces', MetricCategory.EDITS_ANALYSIS, monowiki_stats.edition_on_type_pages, 'BAR GRAPH: number of edits in the most popular namespaces of a wiki.'))
     metrics.append(BarGraph('edition_on_type_pages_extends_rest', 'Edits in other namespaces', MetricCategory.EDITS_ANALYSIS, monowiki_stats.edition_on_type_pages_extends_rest, 'BAR GRAPH: number of edits in less popular namespaces of the wiki.'))
 
+    metrics.append(BarGraph('users_first_edit', 'Users by tenure', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_first_edit, 'BAR GRAPH: Users by the number of months since their first edit in the wiki.'))
 
     metrics.append(BarGraph('users_first_edit', 'Users by tenure', MetricCategory.ACTIVE_EDITORS_ANALYSIS, monowiki_stats.users_first_edit, 'BAR GRAPH: Users by the number of months since their first edit in the wiki.'))
 

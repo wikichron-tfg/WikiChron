@@ -83,6 +83,20 @@ def main_header(selection_url, query_string, mode_config, assets_url_path):
                                     id='share-button',
                                     className='icon',
                                     title='Share current selection'
+                                ),
+                                html.A(
+                                    html.Img(src='{}/documentation.svg'.format(assets_url_path)),
+                                    href='https://github.com/Grasia/WikiChron/wiki/',
+                                    target='_blank',
+                                    className='icon',
+                                    title='Documentation'
+                                ),
+                                html.A(
+                                    html.Img(src='{}/ico-github.svg'.format(assets_url_path)),
+                                    href='https://github.com/Grasia/WikiChron',
+                                    target='_blank',
+                                    className='icon',
+                                    title='Github repo'
                                 )
                             ],
                             className='icons-bar')
@@ -238,7 +252,8 @@ def build_network_controls(network_code):
                 id='dd-size-metric',
                 options=options,
                 placeholder='Select a metric',
-                className='metric-selector'
+                className='metric-selector',
+                value=options[0]['value']
             )
         ], className='controls-right'),
     ], className='controls-right')
@@ -382,7 +397,7 @@ def build_ranking(network_code) -> html.Div:
     body = html.Div(children=[
             html.Div(children=[dcc.Dropdown(
                 id='dd-local-metric',
-                value=options[1]['label'],
+                value=options[0]['label'],
                 options=options,
                 placeholder='Select a local metric'
             )], className='ranking-selection'),
@@ -437,28 +452,6 @@ def build_sidebar(network_code) -> html.Div:
     ])
 
 
-def build_foot(assets_url_path):
-    return html.Div(children=[
-        html.P('Developded by Youssef El Faqir El Rhazoui'),
-        html.Div([
-            html.A(
-                html.Img(src='{}/ico-github.svg'.format(assets_url_path)),
-                href='https://github.com/Grasia/WikiChron',
-                target='_blank',
-                className='icon',
-                title='Github repo'
-            ),
-            html.A(
-                html.Img(src='{}/documentation.svg'.format(assets_url_path)),
-                href='https://github.com/Grasia/WikiChron/wiki/',
-                target='_blank',
-                className='icon',
-                title='Documentation'
-            )
-        ], className='foot-container')
-    ], className='foot')
-
-
 def generate_main_content(wikis_arg, network_type_arg, query_string):
     """
     It generates the main content
@@ -485,7 +478,7 @@ def generate_main_content(wikis_arg, network_type_arg, query_string):
     selected_wiki = wikis_arg[0]
     selected_wiki_name = selected_wiki['name']
     selected_network_name = network_type_arg['name']
-    selection_url = f'{mode_config["HOME_MODE_PATHNAME"]}selection{query_string}'
+    selection_url = f'{mode_config["HOME_MODE_PATHNAME"]}selection/{query_string}'
 
     (time_index_beginning, time_index_end) = data_controller.calculate_indices_all_months(selected_wiki)
 
@@ -524,7 +517,6 @@ def generate_main_content(wikis_arg, network_type_arg, query_string):
         build_sidebar(network_type_code)
     ], className='body')
 
-    foot = build_foot(assets_url_path)
     labels_script = gdc.Import(src='/js/common/dash/sliderHandlerLabels.js')
     filter_script = gdc.Import(src='/js/networks/dash/filterInfo.js')
-    return html.Div(children = [header, body, foot, labels_script, filter_script])
+    return html.Div(children = [header, body, labels_script, filter_script])

@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 import math
 import inequality_coefficients as ineq
+import datetime
 
 # CONSTANTS
 MINIMAL_USERS_GINI = 20
@@ -260,7 +261,7 @@ def percentage_edits_by_anonymous_accum(data, index):
 
 ########################################################################
 
-# Distribution Of Work
+# Distribution Of Participation
 
 ##### Helper functions #####
 

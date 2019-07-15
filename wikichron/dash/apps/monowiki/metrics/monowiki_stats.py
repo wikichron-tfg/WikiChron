@@ -274,21 +274,21 @@ def users_reincident(data, index):
 
 def current_streak_this_month(data, index):
     return current_streak_x_or_y_months_in_a_row(data, index, 1, 0)
-    
+
 
 def current_streak_2_or_3_months_in_a_row(data, index):
     return current_streak_x_or_y_months_in_a_row(data, index, 1, 3)
-    
+
 
 
 def current_streak_4_or_6_months_in_a_row(data, index):
     return current_streak_x_or_y_months_in_a_row(data, index, 3, 6)
-    
+
 
 
 def current_streak_more_than_six_months_in_a_row(data, index):
     return current_streak_x_or_y_months_in_a_row(data, index, 6, 0)
-    
+
 
 def current_streak(data, index):
     this_month = current_streak_this_month(data, index)
@@ -542,15 +542,15 @@ def users_other_page(data,index):
     Monthly number of users that have edited the rest of relevant namespaces in the wiki
     '''
     category_list = [-2, -1, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 110, 111]
-    
+
     aux = pd.DataFrame()
     aux['timestamp'] = index
-    
+
     for i in range(len(category_list)):
         serie = filter_users_pageNS(data, index, category_list[i])
         serie = pd.DataFrame(serie).reset_index()
         aux['page_ns_' + str(category_list[i])] = serie['contributor_id']
-    
+
     aux['final_result'] = aux.sum(axis=1)
     series = pd.Series(index=aux['timestamp'], data=aux['final_result'].values)
     return series
@@ -876,7 +876,7 @@ def edit_distributions_across_editors(data, index):
     graphs_list = [[0 for j in range(max_range+1)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
-    for i, v in months_range.iteritems(): 
+    for i, v in months_range.iteritems():
         i = list(i)
         current = i[0]
         p = i[1]
@@ -885,8 +885,8 @@ def edit_distributions_across_editors(data, index):
         p = p.split(',')
         num_min = int(float(p[0]))
         num_max = int(float(p[1]))
-        num_min = (num_min+1) 
-        num_max = (num_max) 
+        num_min = (num_min+1)
+        num_max = (num_max)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
         while (resta > 31 and before != pd.to_datetime(0)):
@@ -897,8 +897,8 @@ def edit_distributions_across_editors(data, index):
             before = current
         for num in range(num_min,num_max+1):
             graphs_list[j][num] = v
-    
-    
+
+
     wiki_by_metrics = []
     for metric_idx in range(max_contributions+1):
         metric_row = [graphs_list[wiki_idx].pop(0) for wiki_idx in range(len(graphs_list))]
@@ -928,7 +928,7 @@ def bytes_difference_across_articles(data, index):
     graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
-    for i, v in months_range.iteritems(): 
+    for i, v in months_range.iteritems():
         i = list(i)
         current = i[0]
         p = i[1]
@@ -937,8 +937,8 @@ def bytes_difference_across_articles(data, index):
         p = p.split(',')
         num_min = int(float(p[0]))
         num_max = int(float(p[1]))
-        num_min = (num_min+1) 
-        num_max = (num_max) 
+        num_min = (num_min+1)
+        num_max = (num_max)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
         while (resta > 31 and before != pd.to_datetime(0)):
@@ -949,7 +949,7 @@ def bytes_difference_across_articles(data, index):
             before = current
         for num in range(num_min,num_max):
             graphs_list[j][num] = v
-    
+
     wiki_by_metrics = []
     for metric_idx in range(max_dif_bytes+1):
         metric_row = [graphs_list[wiki_idx].pop(0) for wiki_idx in range(len(graphs_list))]
@@ -977,8 +977,8 @@ def edition_on_pages(data, index):
         p = p.split(',')
         num_min = int(float(p[0]))
         num_max = int(float(p[1]))
-        num_min = (num_min+1) 
-        num_max = (num_max) 
+        num_min = (num_min+1)
+        num_max = (num_max)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
         if (resta > 31 and before != pd.to_datetime(0)):
@@ -1005,7 +1005,7 @@ def revision_on_pages(data, index):
     graphs_list = [[0 for j in range(max_range+1)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
-    for i, v in z.iteritems(): 
+    for i, v in z.iteritems():
         i = list(i)
         current = i[0]
         p = i[1]
@@ -1014,8 +1014,8 @@ def revision_on_pages(data, index):
         p = p.split(',')
         num_min = int(float(p[0]))
         num_max = int(float(p[1]))
-        num_min = (num_min+1) 
-        num_max = (num_max) 
+        num_min = (num_min+1)
+        num_max = (num_max)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
         while (resta > 31 and before != pd.to_datetime(0)):
@@ -1032,7 +1032,7 @@ def revision_on_pages(data, index):
             wiki_by_metrics.append(metric_row)
     return [index,list(range(maxRevision)),wiki_by_metrics, z]
 
-def  distribution_editors_between_articles_edited_each_month(data, index):
+def distribution_editors_between_articles_edited_each_month(data, index):
     users_registered = filter_anonymous(data)
     #main namespace
     users_registered = users_registered[users_registered['page_ns']==0]
@@ -1040,7 +1040,7 @@ def  distribution_editors_between_articles_edited_each_month(data, index):
     users_per_article = users_registered.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id'])['contributor_id'].nunique().reset_index(name='editor_count')
 
     max_editors = max(users_per_article['editor_count'])
-    
+
     z_articles_by_y_editors = users_per_article.groupby([pd.Grouper(key ='timestamp', freq='MS'),'editor_count']).size()
 
 
@@ -1051,8 +1051,7 @@ def  distribution_editors_between_articles_edited_each_month(data, index):
     graphs_list = [[0 for j in range(max_editors+1)] for i in range(len(index))]
     anterior = pd.to_datetime(0)
     j = -1
-    print('first for starts')
-    for i, v in z_articles_by_y_editors.iteritems(): 
+    for i, v in z_articles_by_y_editors.iteritems():
         i = list(i)
         actual = i[0]
         num = i[1]
@@ -1061,14 +1060,12 @@ def  distribution_editors_between_articles_edited_each_month(data, index):
         while (resta > 31 and anterior != pd.to_datetime(0)):
             j = j+1
             resta = resta-31
-        if (anterior != actual):   
+        if (anterior != actual):
             j = j +1
             anterior = actual
         if(j <= len(index)):
             graphs_list[j][num] = v
 
-  
-    print('second for starts')
     z_param = []
     for i in range(max_editors+1):
             row = [graphs_list[j].pop(0) for j in range(len(graphs_list))]
@@ -1088,23 +1085,22 @@ def changes_in_absolute_size_of_editor_classes(data, index):
     months = months.size()
     classes = ['between 1 and 4 edits', 'between 5 and 24 edits', 'between 25 and 99 edits', '>= 100 edits' ]
     graphs_list = [[0 for j in range(len(index))] for i in range(len(classes))]
-    print(concatenate)
 
     for i in range(len(classes)):
-        
+
         for j in range(len(index)):
-            
+
             if (j == 0):
                 graphs_list[i][j] = concatenate.iloc[i, j]
-                
+
             else:
-                
+
                 if (concatenate.iloc[i, j] == concatenate.iloc[i, j - 1]):
                         graphs_list[i][j] = 0
 
                 elif (concatenate.iloc[i, j] < concatenate.iloc[i, j - 1]):
                     graphs_list[i][j] = -(concatenate.iloc[i, j - 1] - concatenate.iloc[i, j])
-                        
+
                 elif (concatenate.iloc[i, j] > concatenate.iloc[i, j - 1]):
                         graphs_list[i][j] = concatenate.iloc[i, j] - concatenate.iloc[i, j - 1]
     return[months.index, classes, graphs_list, concatenate]
@@ -1153,7 +1149,7 @@ def contributor_pctg_per_contributions_pctg(data, index):
         cat_upper = group[group['edits%_accum'] > 99].shape[0]
         daux = {'timestamp':idx, 'category50%':(category50/num_contributors)*100, 'category80%':(category80/num_contributors) * 100, 'category90%':(category90/num_contributors) * 100,'category99%':(category99/num_contributors) * 100, 'category_upper':(cat_upper/num_contributors) * 100}
         lst_dict.append(daux)
-        
+
     final_df = pd.DataFrame(columns = cols, data = lst_dict)
     category_50 = pd.Series(index=final_df['timestamp'], data=final_df['category50%'].values)
     category_80 = pd.Series(index=final_df['timestamp'], data=final_df['category80%'].values)
@@ -1173,7 +1169,7 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
     new_index = data.groupby(pd.Grouper(key='timestamp', freq='MS')).size().to_frame('months').index
 
     users_month_edits =data.groupby(['contributor_id']).apply(lambda x: x.groupby(pd.Grouper(key='timestamp', freq='MS')).size().to_frame('nEdits_cumulative').reindex(new_index, fill_value=0).cumsum()).reset_index()
-    
+
     # 2.1) Get the non accum value of edits
     cond = (users_month_edits['contributor_id'] == users_month_edits['contributor_id'].shift())
     users_month_edits['nEdits_non_accum'] = np.where(cond, users_month_edits['nEdits_cumulative'] - users_month_edits['nEdits_cumulative'].shift(), users_month_edits['nEdits_cumulative'])
@@ -1181,7 +1177,7 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
     # 2) Add a new column which contains the total number of edits on each month (this value is NOT accumulated)
     users_month_edits = users_month_edits.groupby([pd.Grouper(key='timestamp', freq='MS'),'contributor_id']).sum().reset_index()
     users_month_edits['nEdits_month'] = users_month_edits.groupby(pd.Grouper(key='timestamp', freq='MS'))['nEdits_non_accum'].transform('sum')
-    
+
     # 3) Now, we want to calculate the percentage of edits that each user has done on each month: add a new column, 'edits_pctg'
     users_month_edits['edits%'] = (users_month_edits['nEdits_non_accum']/users_month_edits['nEdits_month'])*100
 
@@ -1198,7 +1194,7 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
     cols = ['timestamp', 'category50%', 'category80%', 'category90%', 'category99%', 'category_upper']
     for idx in users_month_edits.index.unique():
         group = users_month_edits.loc[idx]
-        #on each month, for the total contributors we don't count the contributors whose collaboration is 0%.    
+        #on each month, for the total contributors we don't count the contributors whose collaboration is 0%.
         group = group[group['edits%'] > 0]
         num_contributors = group.shape[0]
         if (num_contributors > 0):
@@ -1209,7 +1205,7 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
             cat_upper = group[group['edits%_accum'] > 99].shape[0]
             daux = {'timestamp':idx, 'category50%':(category50/num_contributors)*100, 'category80%':(category80/num_contributors) * 100, 'category90%':(category90/num_contributors) * 100,'category99%':(category99/num_contributors) * 100, 'category_upper':(cat_upper/num_contributors) * 100}
             lst_dict.append(daux)
-        
+
     final = pd.DataFrame(columns = cols, data = lst_dict)
 
     category_50 = pd.Series(index=final['timestamp'], data=final['category50%'].values)
