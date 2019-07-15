@@ -33,7 +33,6 @@ def calculate_index_all_months(data):
 
 # Pages
 
-
 def pages_new(data, index):
     # We use the fact that data is sorted first by page_title and them by revision_id
     # If we drop publicates we will get the first revision for each page_title, which
@@ -260,6 +259,7 @@ def percentage_edits_by_anonymous_accum(data, index):
     return series
 
 
+
 ########################################################################
 
 # Retention Metrics
@@ -326,6 +326,7 @@ def surviving_new_editors(data, index):
 
 
 ########################################################################
+
 
 # Distribution Of Participation
 
