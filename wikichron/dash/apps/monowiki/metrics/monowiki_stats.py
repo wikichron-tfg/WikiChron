@@ -321,7 +321,6 @@ def edition_on_type_pages(data, index):
     userP=edition_concrete(data, index, 2)
     talkPU=edition_concrete(data, index, 3)
     rest=rest_edition(data, index, [0,1,2,3])
-	prueba=0
     articles.name= 'Article pages'
     talkPA.name='Article talk pages'
     userP.name='User pages'
