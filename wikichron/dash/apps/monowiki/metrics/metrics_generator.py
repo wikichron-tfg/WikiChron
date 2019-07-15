@@ -92,7 +92,7 @@ def generate_monowiki_metrics():
     metrics.append(BarGraph('users_edits_number_of_edits', 'Active editors by experience', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_number_of_edits, 'BAR GRAPH: Users by the number of edits they have made until the previous month.'))
     metrics.append(BarGraph('users_edits_number_of_edits_abs', 'Active editors by experience (absolute)', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_number_of_edits_abs, 'BAR GRAPH: Users by the number of edits they have made until the previous month (absolute).'))
 
-    metrics.append(BarGraph('type_page_users_edit', 'Active editors in namespaces', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_in_namespaces, 'BAR GRAPH: Users by the namespaces they have edited in a month.'))
+    metrics.append(BarGraph('type_page_users_edit', 'By namespace edited', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_in_namespaces, 'BAR GRAPH: Users by the namespaces they have edited in a month.'))
 
     metrics.append(LineGraph('surviving new editor', 'Surviving new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.surviving_new_editor, 'SCATTER GRAPH: Editor which, in the second month after being registrated, edits the wiki'))
     metrics.append(LineGraph('returning new editor', 'Returning new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.returning_new_editor, 'SCATTER GRAPH: New editor who completes at least two edit sessions within 7 days afte registering.'))
