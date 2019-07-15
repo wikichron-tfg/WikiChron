@@ -326,7 +326,7 @@ def edition_on_type_pages(data, index):
     userP.name='User pages'
     talkPU.name='User talk pages'
     rest.name='Other pages'
-    return [articles,talkPA,userP,talkPU,rest]
+    return [articles, talkPA, talkPU, userP, rest]
 
 def edition_on_type_pages_extends_rest(data, index):
     data=filter_anonymous(data)
@@ -1071,39 +1071,7 @@ def distribution_editors_between_articles_edited_each_month(data, index):
             row = [graphs_list[j].pop(0) for j in range(len(graphs_list))]
             z_param.append(row)  
     return [index,y_param,z_param, z_articles_by_y_editors]
-
-def changes_in_absolute_size_of_editor_classes(data, index):
-    class1 = users_number_of_edits_between_1_and_4(data, index).to_frame('one_four')
-    class2 = users_number_of_edits_between_5_and_24(data, index).to_frame('5_24')
-    class3 = users_number_of_edits_between_25_and_99(data, index).to_frame('25_99')
-    class4 = users_number_of_edits_highEq_100(data, index).to_frame('highEq_100')
-    concatenate = pd.concat([class1, class2, class3, class4], axis = 1)
-    concatenate['suma'] = concatenate[['one_four', '5_24', '25_99', 'highEq_100']].sum(axis=1)
-    concatenate = concatenate.transpose()
-    # With this data, we can start calculating the heatmap axises:
-    months = data.groupby(pd.Grouper(key ='timestamp', freq='MS'))
-    months = months.size()
-    classes = ['between 1 and 4 edits', 'between 5 and 24 edits', 'between 25 and 99 edits', '>= 100 edits' ]
-    graphs_list = [[0 for j in range(len(index))] for i in range(len(classes))]
-
-    for i in range(len(classes)):
-
-        for j in range(len(index)):
-
-            if (j == 0):
-                graphs_list[i][j] = concatenate.iloc[i, j]
-
-            else:
-
-                if (concatenate.iloc[i, j] == concatenate.iloc[i, j - 1]):
-                        graphs_list[i][j] = 0
-
-                elif (concatenate.iloc[i, j] < concatenate.iloc[i, j - 1]):
-                    graphs_list[i][j] = -(concatenate.iloc[i, j - 1] - concatenate.iloc[i, j])
-
-                elif (concatenate.iloc[i, j] > concatenate.iloc[i, j - 1]):
-                        graphs_list[i][j] = concatenate.iloc[i, j] - concatenate.iloc[i, j - 1]
-    return[months.index, classes, graphs_list, concatenate]
+    
 
 ########################### % Of edits by % of users (accumulated and monthly) ###########################################
 

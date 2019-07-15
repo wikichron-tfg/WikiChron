@@ -87,8 +87,6 @@ def generate_monowiki_metrics():
 
     metrics.append(BarGraph('users_first_edit', 'Users by tenure', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_first_edit, 'BAR GRAPH: Users by the number of months since their first edit in the wiki.'))
 
-    metrics.append(BarGraph('users_first_edit', 'Users by tenure', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_first_edit, 'BAR GRAPH: Users by the number of months since their first edit in the wiki.'))
-
     metrics.append(BarGraph('users_last_edit', 'Returning active editors', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_last_edit, 'BAR GRAPH: Users by the number of months since their last edit in the wiki.'))
 
     metrics.append(BarGraph('users_edits_number_of_edits', 'Active editors by experience', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.users_number_of_edits, 'BAR GRAPH: Users by the number of edits they have made until the previous month.'))
@@ -116,7 +114,6 @@ def generate_monowiki_metrics():
     # heatmap metrics
     metrics.append(HeatMap('edit_distributions_across_editors', 'Edit distribution across editors', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.edit_distributions_across_editors, 'HEATMAP: contributors (z axis) per contributions (y axis).'))
     metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.bytes_difference_across_articles, 'HEATMAP: number of articles (z axis) than contain these bytes (y axis).'))
-    metrics.append(HeatMap('changes_in_absolute_size_of_classes', 'changes in categories of active editors by experience', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.changes_in_absolute_size_of_editor_classes, 'HEATMAP: increment or decrement (z axis) of an active editor category (y axis).'))
     metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Monthly distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, 'HEATMAP:.'))
     metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.edition_on_pages, 'HEATMAP:'))
     metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.revision_on_pages, 'HEATMAP:'))
