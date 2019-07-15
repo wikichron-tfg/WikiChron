@@ -66,7 +66,7 @@ class BarGraph(Metric):
         colors = list(map(lambda x: 'rgb(' + str(int(x[0])) + ', ' + str(int(x[1])) + ', ' + str(int(x[2])) + ')', colors_r))
         return colors
 
-    def draw(self, is_relative_time):
+    def draw(self, time_index):
         """
         generate a Bar graph.
         Returns a filled graphs_list.
@@ -83,11 +83,7 @@ class BarGraph(Metric):
         colors = self.colors_selection(sequencial, long, num_submetrics, rgba)
         for submetric in range(num_submetrics):
             submetric_data = self.data[submetric]
-
-            if is_relative_time:
-                x_axis = list(range(len(submetric_data.index))) # relative to the age of the wiki in months
-            else:
-                x_axis = submetric_data.index # natural months
+            x_axis = time_index
 
             if sequencial == False and submetric == 5:
                 submetric1 = 9
