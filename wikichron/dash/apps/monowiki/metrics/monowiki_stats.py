@@ -112,12 +112,10 @@ def users_active_more_than_x_editions(data, index, x):
 def add_x_months(data, months):
     return data['timestamp'].apply(lambda x: x + relativedelta(months = +months))
 
-def displace_x_months_per_user(data, months):
-    return data.shift(months)
+'''def displace_x_months_per_user(data, months):
+    return data.shift(months)'''
 
 def current_streak_x_or_y_months_in_a_row(mothly, index, z, y):
-    #data = filter_anonymous(data)
-    #mothly = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('size').reset_index()
     mothly['add_months'] = add_x_months(mothly, z)
     lista = ['contributor_id']
     lista.append('add_months')
@@ -125,10 +123,10 @@ def current_streak_x_or_y_months_in_a_row(mothly, index, z, y):
       mothly['add_y_months'] = add_x_months(mothly, y)
       lista.append('add_y_months')
     group_users = mothly[lista].groupby(['contributor_id'])
-    displace_z_month = displace_x_months_per_user(group_users['add_months'], z)
+    displace_z_month = group_users['add_months'].shift(z)
     mothly['displace']= displace_z_month
     if y > 0:
-      displace_y_month = displace_x_months_per_user(group_users['add_y_months'], y)
+      displace_y_month = group_users['add_y_months'].shift(y)
       mothly['displace_y_month']= displace_y_month
       current_streak = mothly[(mothly['displace'] == mothly['timestamp']) & (mothly['displace_y_month'] != mothly['timestamp'])]
     elif z == 1:
@@ -917,10 +915,10 @@ def bytes_difference_across_articles(data, index):
     graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
-    for i, v in months_range.iteritems():
-        i = list(i)
-        current = i[0]
-        p = i[1]
+    for i, v in months_range.iteritems(): 
+        i = list(i)#lsita con timestamp y bins
+        current = i[0]#fecha
+        p = i[1]# untervalo
         p = p.split(']')[0]
         p = p.split('(')[1]
         p = p.split(',')
@@ -930,19 +928,15 @@ def bytes_difference_across_articles(data, index):
         num_max = (num_max)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
-        while (resta > 31 and before != pd.to_datetime(0)):
-            j = j+1
-            resta = resta-31
+        if (resta > 31 and before != pd.to_datetime(0)):
+            aux= int(resta / 31)
+            j = j + aux
+            resta = resta- (31 * aux)
         if (before != current):
             j = j +1
             before = current
-        for num in range(num_min,num_max):
-            graphs_list[j][num] = v
-
-    wiki_by_metrics = []
-    for metric_idx in range(max_dif_bytes+1):
-        metric_row = [graphs_list[wiki_idx].pop(0) for wiki_idx in range(len(graphs_list))]
-        wiki_by_metrics.append(metric_row) 
+        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
+    wiki_by_metrics = np.transpose(graphs_list);
     return [index, list(range(min_dif_bytes, max_dif_bytes)), wiki_by_metrics, months_range]
 
 def edition_on_pages(data, index):
@@ -994,10 +988,10 @@ def revision_on_pages(data, index):
     graphs_list = [[0 for j in range(max_range+1)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
-    for i, v in z.iteritems():
-        i = list(i)
-        current = i[0]
-        p = i[1]
+    for i, v in z.iteritems(): 
+        i = list(i)#lsita con timestamp y bins
+        current = i[0]#fecha
+        p = i[1]# untervalo
         p = p.split(']')[0]
         p = p.split('(')[1]
         p = p.split(',')
@@ -1007,18 +1001,15 @@ def revision_on_pages(data, index):
         num_max = (num_max)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
-        while (resta > 31 and before != pd.to_datetime(0)):
-            j = j+1
-            resta = resta-31
+        if (resta > 31 and before != pd.to_datetime(0)):
+            aux= int(resta / 31)
+            j = j + aux
+            resta = resta- (31 * aux)
         if (before != current):
             j = j +1
             before = current
-        for num in range(num_min,num_max+1):
-            graphs_list[j][num] = v
-    wiki_by_metrics = []
-    for metric_idx in range(maxRevision+1):
-            metric_row = [graphs_list[wiki_idx].pop(0) for wiki_idx in range(len(graphs_list))]
-            wiki_by_metrics.append(metric_row)
+        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
+    wiki_by_metrics = np.transpose(graphs_list);
     return [index,list(range(maxRevision)),wiki_by_metrics, z]
 
 def distribution_editors_between_articles_edited_each_month(data, index):
