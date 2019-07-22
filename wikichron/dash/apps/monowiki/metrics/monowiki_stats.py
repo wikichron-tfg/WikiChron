@@ -975,9 +975,16 @@ def edition_on_pages(data, index):
     wiki_by_metrics = np.transpose(graphs_list);
     return [index,list(range(maxEditors)),wiki_by_metrics, z]
 
+def mask_first(x):
+    result = np.ones_like(x)
+    result[0] = 0
+    return result
+
 def revision_on_pages(data, index):
     users_registered = filter_anonymous(data)
-    without_first_edition = users_registered.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id']).apply(lambda x:x.iloc[1:,1:])
+    #without_first_edition = users_registered.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id']).apply(lambda x:x.iloc[1:,1:])
+    groupTP = users_registered.groupby(['page_id'])['page_id'].transform(mask_first).astype(bool)
+    without_first_edition = users_registered.loc[groupTP]
     z=without_first_edition.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id']).size().to_frame('revisiones').reset_index()
     maxRevision= max(z['revisiones'])
     round_max = (maxRevision+5)
