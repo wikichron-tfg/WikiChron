@@ -124,7 +124,7 @@ def current_streak_x_or_y_months_in_a_row(mothly, index, z, y):
       lista.append('add_y_months')
     group_users = mothly[lista].groupby(['contributor_id'])
     displace_z_month = group_users['add_months'].shift(z)
-    mothly['displace']= displace_z_month
+    mothly['displace'] = displace_z_month
     if y > 0:
       displace_y_month = group_users['add_y_months'].shift(y)
       mothly['displace_y_month']= displace_y_month
@@ -898,18 +898,21 @@ def bytes_difference_across_articles(data, index):
     mains = users_registered[users_registered['page_ns'] == 0]
     order = mains.sort_index()
     group_by_page_id = order[['page_id', 'bytes']].groupby(['page_id'])
-    frame_bytes = group_by_page_id.apply(lambda x: (x.bytes-x.bytes.shift()).fillna(x.bytes)).to_frame('dif')
-    #frame_bytes['dif'] = group_by_page_id.apply(lambda x: x.bytes-x.bytes.shift())
-    #frame_bytes['dif'] = frame_bytes['dif'].fillna(frame_bytes['bytes'])
-    frame_bytes['dif'] = frame_bytes['dif'].apply(lambda x: int(x))
-    frame_bytes = frame_bytes.reset_index()
-    max_dif_bytes = int(max(frame_bytes['dif']))
-    min_dif_bytes = int(min(frame_bytes['dif'])-1)
+    #order = group_by_page_id.apply(lambda x: (x.bytes-x.bytes.shift()).fillna(x.bytes)).to_frame('dif')
+    group = group_by_page_id['bytes'].shift()
+    order['bytes1'] = group
+    order['dif'] = order['bytes'] - order['bytes1']
+    order['dif'] = order['dif'].fillna(order['bytes'])
+    order['dif'] = order['dif'].apply(lambda x: int(x))
+    #print(order[['bytes', 'bytes1', 'dif']])
+    #order = order.reset_index()
+    max_dif_bytes = int(max(order['dif']))
+    min_dif_bytes = int(min(order['dif'])-1)
     round_max = (max_dif_bytes+100)
     list_range = list(range(min_dif_bytes, round_max, 100))
     max_range = max(list_range)
-    frame_bytes['range'] = pd.cut(frame_bytes['dif'], bins = list_range).astype(str)
-    months_range = frame_bytes.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
+    order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
+    months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
     min_dif_bytes_a = abs(min_dif_bytes+1)
     max_range = max_range + min_dif_bytes_a
     graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
@@ -937,7 +940,7 @@ def bytes_difference_across_articles(data, index):
             before = current
         graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
     wiki_by_metrics = np.transpose(graphs_list);
-    return [index, list(range(min_dif_bytes, max_dif_bytes)), wiki_by_metrics, months_range]
+    return [index, list(range(min_dif_bytes, max_dif_bytes)), wiki_by_metrics]
 
 def edition_on_pages(data, index):
     users_registered = filter_anonymous(data)
