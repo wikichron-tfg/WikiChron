@@ -77,7 +77,7 @@ class BarGraph(Metric):
         for idx in range(num_submetrics):
             graphs_list.append([])
         sequencial = True
-        if self.text == 'By namespace edited':
+        if self.text == 'By namespace edited' or self.text == 'Edits in popular namespaces' or self.text == 'Edits in other namespaces':
             sequencial = False
         rgba, long = self.get_colors(sequencial)
         colors = self.colors_selection(sequencial, long, num_submetrics, rgba)
