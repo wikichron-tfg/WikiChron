@@ -99,9 +99,9 @@ def generate_monowiki_metrics():
     metrics.append(BarGraph('edition_on_type_pages_extends_rest', 'By other namespace edited', MetricCategory.DISTRIBUTION_OF_EDITS_ACROSS_REGISTERED_USERS, monowiki_stats.edition_on_type_pages_extends_rest, 'Distribution of edits in less popular namespaces'))
 
     #DISTRIBUTION_OF_EDITS
-    metrics.append(AreaChart('contributorPctg_per_contributionPctg', 'Percentage of registered users making a percentage of edits', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.contributor_pctg_per_contributions_pctg, 'FILLED-AREA CHART: % editors per %editions (% editions fixed to 50%, 80%, 90% and 99%)'))
-    metrics.append(AreaChart('contributorPctg_per_contributionPctg_month', 'Percentage of registered users making a percentage of edits (monthly)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.contributor_pctg_per_contributions_pctg_per_month, 'FILLED-AREA CHART: monthly % editors per %editions (%editions fixed to 50%, 80%, 90% and 99%)'))
-    metrics.append(HeatMap('edit_distributions_across_editors', 'Distribution of edits across editors (heatmap)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edit_distributions_across_editors, 'HEATMAP: contributors (z axis) per contributions (y axis).'))
+    metrics.append(AreaChart('contributorPctg_per_contributionPctg', 'Percentage of registered users making a percentage of edits', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.contributor_pctg_per_contributions_pctg, 'Percentage of editors across percentege of editions (Percentage of editions fixed to 50%, 80%, 90% and 99%)'))
+    metrics.append(AreaChart('contributorPctg_per_contributionPctg_month', 'Percentage of registered users making a percentage of edits (monthly)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.contributor_pctg_per_contributions_pctg_per_month, 'Monthly percentage of editors aross percentage of editions (Percentage of editions fixed to 50%, 80%, 90% and 99%)'))
+    metrics.append(HeatMap('edit_distributions_across_editors', 'Distribution of edits across editors (heatmap)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edit_distributions_across_editors, 'Distribution of editors (z axis) per distribution of edits (y axis).'))
 
 
     
