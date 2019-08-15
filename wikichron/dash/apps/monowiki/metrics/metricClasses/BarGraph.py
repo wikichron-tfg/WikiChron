@@ -28,7 +28,7 @@ class BarGraph(Metric):
         metric_data -- a list that contains one Pandas Series per colored bar to be shown.
         """
         self.data = metric_data
-    
+
     def get_index(self):
         return self.data[0].index
 
