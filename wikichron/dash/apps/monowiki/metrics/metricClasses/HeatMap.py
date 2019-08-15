@@ -21,6 +21,7 @@ class HeatMap(Metric):
         self.xaxis = None
         self.yaxis = None
         self.zaxis = None
+        self.legend = None
     
 
     def set_data(self, metric_data):
@@ -33,6 +34,7 @@ class HeatMap(Metric):
         self.xaxis = metric_data[0]
         self.yaxis = metric_data[1]
         self.zaxis = metric_data[2]
+        self.legend = metric_data[3]
 
     def get_index(self):
         return self.xaxis
@@ -42,8 +44,10 @@ class HeatMap(Metric):
         generate a HeatMap graph.
         returns a filled graph_list.
         """
+        
         return [go.Heatmap(z=self.zaxis,
                         x=time_index,
                         y=self.yaxis,
+                        colorbar={"title": self.legend},
                         colorscale= 'Viridis'
                         )]

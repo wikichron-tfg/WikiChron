@@ -106,10 +106,10 @@ def generate_monowiki_metrics():
 
     
     # heatmap metrics
-    metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.bytes_difference_across_articles, 'HEATMAP: number of articles (z axis) than contain these bytes (y axis).'))
-    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Monthly distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, 'HEATMAP:.'))
-    metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.edition_on_pages, 'HEATMAP:'))
-    metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.revision_on_pages, 'HEATMAP:'))
+    metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.bytes_difference_across_articles, 'Number of articles (z axis) than contain these bytes (y axis).'))
+    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Monthly distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, ''))
+    metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.edition_on_pages, ''))
+    metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.revision_on_pages, ''))
 	
     return metrics
 
