@@ -299,7 +299,7 @@ def current_streak(data, index):
     more_six = current_streak_x_or_y_months_in_a_row(mothly, index, 6, 0)
 	
     set_category_name([this_month, two_three_months, four_six_months, more_six], ['1 month editing', 'Btw. 2 and 3 consecutive months', 'Btw. 4 and 6 consecutive months', 'More than 6 consecutive months'])
-    return [this_month, two_three_months, four_six_months, more_six]
+    return [this_month, two_three_months, four_six_months, more_six, 1]
 
 def current_streak_only_mains(data, index):
     data = data[data['page_ns']==0]
@@ -318,7 +318,7 @@ def edition_on_type_pages(data, index):
     userP.name='User pages'
     talkPU.name='User talk pages'
     rest.name='Other pages'
-    return [articles, talkPA, talkPU, userP, rest]
+    return [articles, talkPA, talkPU, userP, rest, 0]
 
 def edition_on_type_pages_extends_rest(data, index):
     data=filter_anonymous(data)
@@ -333,7 +333,7 @@ def edition_on_type_pages_extends_rest(data, index):
     template.name='Template pages'
     category.name='Category pages'
     rest.name='Other pages'
-    return [file,mediaWiki,template,category,rest]
+    return [file,mediaWiki,template,category,rest, 0]
 
 ############################ Users by tenure #################################################################################
 
@@ -380,7 +380,7 @@ def users_first_edit(data, index):
 
     set_category_name([this_month, one_three, four_six, six_twelve, more_twelve], ['New users', 'Btw. 1 and 3 months ago', 'Btw. 4 and 6 months ago', 'Btw. 6 and 12 months ago', "More than 12 months ago"])
     
-    return [this_month, one_three, four_six, six_twelve, more_twelve]
+    return [this_month, one_three, four_six, six_twelve, more_twelve, 1]
 
 ############################ Users by the date of the last edit ###########################################################################
 
@@ -428,7 +428,7 @@ def users_last_edit(data, index):
 
     set_category_name([this_month, one_month, two_three_months, four_six_months, more_six_months], ['New users', '1 month ago', 'Btw. 2 and 3 months ago', 'Btw. 4 and 6 months ago', 'More than six months ago'])
 
-    return [this_month, one_month, two_three_months, four_six_months, more_six_months]
+    return [this_month, one_month, two_three_months, four_six_months, more_six_months, 1]
 
 ############################ Active editors by experience #####################################################################
 
@@ -453,7 +453,7 @@ def users_number_of_edits(data, index):
     between_25_99.name = 'Btw. 25 and 99 edits'
     highEq_100.name = 'More than 99 edits'
 
-    return [new_users, one_four, between_5_24, between_25_99, highEq_100]
+    return [new_users, one_four, between_5_24, between_25_99, highEq_100, 1]
 
 def users_number_of_edits_abs(data, index):
     '''
@@ -477,7 +477,7 @@ def users_number_of_edits_abs(data, index):
     between_25_99.name = 'Btw. 25 and 99 edits'
     highEq_100.name = 'More than 99 edits'
     
-    return [new_users, one_four, between_5_24, between_25_99, highEq_100]
+    return [new_users, one_four, between_5_24, between_25_99, highEq_100, 1]
 
 ############################ Active editors by namespace #####################################################################################
 
@@ -544,7 +544,7 @@ def users_in_namespaces(data, index):
 
     set_category_name([main_page, articletalk_page, user_page, template_page, usertalk_page, other_page], ['Article pages', 'Article talk pages', 'User pages', 'Template pages', 'User talk pages', 'Other pages'])
 
-    return [main_page, articletalk_page, user_page, usertalk_page, template_page, other_page]
+    return [main_page, articletalk_page, user_page, usertalk_page, template_page, other_page, 0]
 
 ############################ Edits by editor experience (absolute and relative) #########################################
 
@@ -620,7 +620,7 @@ def number_of_edits_by_experience(data, index):
     nEdits_category4.name = "Edits by experimented (btw. 24 and 99 edits)"
     nEdits_category5.name = "Edits by highly experimented (more than 99 edits)"
 
-    return [nEdits_category5, nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4]
+    return [nEdits_category5, nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4, 1]
 
 def number_of_edits_by_experience_abs(data, index):
     '''
@@ -643,7 +643,7 @@ def number_of_edits_by_experience_abs(data, index):
     edits_experimented.name = "% of edits by experimented (btw. 24 and 99 edits)"
     edits_H_experimented.name = "% of edits by highly experimented (more than 99 edits)"
 
-    return [edits_new_users, edits_beginners, edits_advanced, edits_experimented, edits_H_experimented]
+    return [edits_new_users, edits_beginners, edits_advanced, edits_experimented, edits_H_experimented, 1]
 
 ############################ Edits by editor's tenure #########################################
 
@@ -696,7 +696,7 @@ def number_of_edits_by_tenure(data, index):
 
     set_category_name([nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4, nEdits_category5], ["Edits by new users", "Edits by users whose 1st edit was btw. 1 and 3 months ago", "Edits by users whose 1st edit was btw. 4 and 6 months ago", "Edits by users whose 1st edit was btw. 6 and 12 months ago", "Edits by users whose 1st edit was more than 12 months ago"])
 
-    return [nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4, nEdits_category5]
+    return [nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4, nEdits_category5, 1]
 
 def number_of_edits_by_tenure_abs(data, index):
     '''
@@ -715,7 +715,7 @@ def number_of_edits_by_tenure_abs(data, index):
 
     set_category_name([edits_new_users, edits_1_3, edits_4_6, edits_6_12, edits_12], list_of_category_names)
 
-    return [edits_new_users, edits_1_3, edits_4_6, edits_6_12, edits_12]
+    return [edits_new_users, edits_1_3, edits_4_6, edits_6_12, edits_12, 1]
 
 ############################ Edits by editor's last edit date #########################################
 
@@ -768,7 +768,7 @@ def number_of_edits_by_last_edit(data, index):
     
     set_category_name([nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4, nEdits_category5], ["Edits by new users", "Edits by users whose last edit was 1 month ago", "Edits by users whose last edit was btw. 2 and 3 months ago", "Edits by users whose last edit was btw. 4 and 6 months ago", "Edits by users whose last edit was more than six months ago"])
 
-    return [nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4, nEdits_category5]
+    return [nEdits_category1, nEdits_category2, nEdits_category3, nEdits_category4, nEdits_category5, 1]
 
 def number_of_edits_by_last_edit_abs(data, index):
     '''
@@ -787,7 +787,7 @@ def number_of_edits_by_last_edit_abs(data, index):
 
     set_category_name([edits_new_users, edits_1, edits_2_3, edits_4_5_6, edits_6], list_of_category_names)
 
-    return [edits_new_users, edits_1, edits_2_3, edits_4_5_6, edits_6]
+    return [edits_new_users, edits_1, edits_2_3, edits_4_5_6, edits_6, 1]
 
 
 
