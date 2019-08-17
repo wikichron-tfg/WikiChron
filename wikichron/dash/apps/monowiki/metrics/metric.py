@@ -29,7 +29,7 @@ class MetricCategory(Enum):
 class Metric(ABC):
     """ Class for ADT Metric. """
 
-    def __init__(self, code, text, category, func, descp):
+    def __init__(self, code, name, category, func, descp, text):
         """
         Creates a new Metric object.
 
@@ -48,6 +48,7 @@ class Metric(ABC):
         self.category = category
         self.func = func
         self.descp = descp
+        self.name = name
 
         super().__init__()
 
