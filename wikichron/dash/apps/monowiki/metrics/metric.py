@@ -18,7 +18,7 @@ class MetricCategory(Enum):
     DISTRIBUTION_OF_EDITS_ACROSS_REGISTERED_USERS = 'Distribution of edits across registered users'
     DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS= 'Distribution of factoid across registered users'
     ACTIVE_USER_DISTRIBUTION = 'Active user distribution'
-    EDIT_DISTRIBUTION = 'Edits distribution'
+    DISTRIBUTION_OF_EDITS = 'Edits distribution'
     PAGES = 'Pages'
     EDITIONS = 'Edits'
     USERS = 'Users'

@@ -105,20 +105,20 @@ def generate_monowiki_metrics():
     metrics.append(HeatMap('edit_distributions_across_editors', 'Distribution of edits across editors (heatmap)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edit_distributions_across_editors, 'Distribution of editors (z axis) per distribution of edits (y axis).', 'Distribution of edits across editors (heatmap)'))
 
     #DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS
-    metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'BAR GRAPH: Average number of factoids added by active editors by experience.'))
+    metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'Added factoids by editing experience', 'BAR GRAPH: Average number of factoids added by active editors by experience.'))
     
    
 
     
-    metrics.append(LineGraph('surviving new editor', 'Surviving new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.surviving_new_editor, 'SCATTER GRAPH: Editor which, in the second month after being registrated, edits the wiki'))
-    metrics.append(LineGraph('returning new editor', 'Returning new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.returning_new_editor, 'SCATTER GRAPH: New editor who completes at least two edit sessions within 7 days afte registering.'))
+    metrics.append(LineGraph('surviving new editor', 'Surviving new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.surviving_new_editor, 'Surviving new editor', 'SCATTER GRAPH: Editor which, in the second month after being registrated, edits the wiki'))
+    metrics.append(LineGraph('returning new editor', 'Returning new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.returning_new_editor, 'Returning new editor', 'SCATTER GRAPH: New editor who completes at least two edit sessions within 7 days afte registering.'))
 
     
     # heatmap metrics
-    metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.bytes_difference_across_articles, 'Number of articles (z axis) than contain these bytes (y axis).', 'Bytes difference across articles'))
-    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Monthly distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, '', 'Monthly distribution of editors across articles'))
-    metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.edition_on_pages, '', 'Edits on pages'))
-    metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.EDIT_DISTRIBUTION, monowiki_stats.revision_on_pages, '', 'Revisions on pages'))
+    metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_difference_across_articles, 'Bytes difference across articles', 'Number of articles (z axis) than contain these bytes (y axis).'))
+    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Monthly distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, 'Monthly distribution of editors across articles', 'Monthly distribution of editors across articles'))
+    metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edition_on_pages, '', 'Edits on pages'))
+    metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.revision_on_pages, '', 'Revisions on pages'))
 
     return metrics
 
