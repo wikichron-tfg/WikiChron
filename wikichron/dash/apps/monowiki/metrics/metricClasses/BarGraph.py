@@ -12,23 +12,27 @@ import numpy as np
 class BarGraph(Metric):
     """Class for metrics graphically shown as a bar graph"""
 
-    def __init__(self, code, text, category, func, descp):
+    def __init__(self, code, name, category, func, descp, text):
         """
         Creates a new BarGraph object.
 
         data -- list of Pandas Series, one per colored bar. 
         """
-        super(BarGraph, self).__init__(code, text, category, func, descp)
+        super(BarGraph, self).__init__(code, name, category, func, descp, text)
 
         self.data = None
+        self.ordered = None
+
     
     def set_data(self, metric_data):
         """
         set data to metric_data.
         metric_data -- a list that contains one Pandas Series per colored bar to be shown.
         """
+        self.ordered = metric_data.pop(-1)
         self.data = metric_data
-    
+
+
     def get_index(self):
         return self.data[0].index
 
@@ -78,7 +82,7 @@ class BarGraph(Metric):
         for idx in range(num_submetrics):
             graphs_list.append([])
         sequencial = True
-        if self.text == 'By namespace edited' or self.text == 'Edits in popular namespaces' or self.text == 'Edits in other namespaces':
+        if self.ordered == 0:
             sequencial = False
         rgba, long = self.get_colors(sequencial)
         colors = self.colors_selection(sequencial, long, num_submetrics, rgba)
