@@ -98,8 +98,8 @@ def generate_monowiki_metrics():
     metrics.append(BarGraph('edition_on_type_pages', 'By namespace edited', MetricCategory.DISTRIBUTION_OF_EDITS_ACROSS_REGISTERED_USERS, monowiki_stats.edition_on_type_pages, 'BAR GRAPH: number of edits in the most popular namespaces of a wiki.'))
     metrics.append(BarGraph('edition_on_type_pages_extends_rest', 'By other namespace edited', MetricCategory.DISTRIBUTION_OF_EDITS_ACROSS_REGISTERED_USERS, monowiki_stats.edition_on_type_pages_extends_rest, 'BAR GRAPH: number of edits in less popular namespaces of the wiki.'))
 
-    
-
+    #DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS
+    metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'BAR GRAPH: Average number of factoids added by active editors by experience.'))
     
    
 
