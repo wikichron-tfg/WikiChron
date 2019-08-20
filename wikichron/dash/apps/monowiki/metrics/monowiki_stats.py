@@ -105,19 +105,36 @@ def merge_dataframes(data, df1):
     '''
     return (df1.reset_index()[["contributor_id", "timestamp"]].merge(data.reset_index(), on=["contributor_id", "timestamp"], how="inner"))
 
-def calculate_added_factoids_by_editor_category(frame, serie):
+def calculate_added_factoids_by_editor_category(frame):
     '''
-    Calculate the monthly average number of added factoids by an editor category.
-    Parameters:
+    Calculate the monthly number of added factoids by an editor category.
+    Parameter:
     -frame: filtered wiki csv that only contains rows for the edits done by a particular editor category.
-    -serie: pd.Series that contains the monthly number of editors that belong to the category.
     '''
     frame['factoids'] = frame['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
     frame['added_factoids'] = frame.groupby('page_id').factoids.diff().fillna(frame.factoids)
     frame['number_added_factoids'] = frame['added_factoids'].apply(len)
     frame = frame.groupby(pd.Grouper(key='timestamp', freq='MS'))['number_added_factoids'].sum()
 
-    return (frame.divide(serie).fillna(0).astype(int))
+    return frame
+
+def calculate_deleted_factoids_by_editor_category(frame):
+    '''
+    Calculate the monthly number of deleted factoids by an editor category.
+    Parameter:
+    -frame: filtered wiki csv that only contains rows for the edits done by a particular editor category.
+    '''
+    frame['factoids'] = frame['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
+    frame['factoids_history'] = pd.concat([pd.Series([set()]), frame['factoids'][:-1]]).reset_index(drop=True)
+    frame['deleted_factoids'] = frame['factoids_history'] - frame['factoids']
+    idx = frame.groupby('contributor_id').head(1).index
+    frame.loc[idx, 'deleted_factoids'] = frame.loc[idx, 'deleted_factoids'].apply(lambda x: set())
+    frame.drop('factoids_history', axis=1, inplace=True)
+    frame['number_deleted_factoids'] = frame['deleted_factoids'].apply(len)
+
+    frame = frame.groupby(pd.Grouper(key='timestamp', freq='MS'))['number_deleted_factoids'].sum()
+
+    return frame
 
 #### Helper users active ####
 
@@ -788,17 +805,58 @@ def added_factoids_by_active_editors_by_experience(data, index):
     between_25_99_frame = merge_dataframes(data, between_25_99)
     highEq_100_frame = merge_dataframes(data, highEq_100)
 
-    new_users_factoids = calculate_added_factoids_by_editor_category(new_users_frame, new_users_serie)
-    one_four_factoids = calculate_added_factoids_by_editor_category(one_four_frame, one_four_serie)
-    between_5_24_factoids = calculate_added_factoids_by_editor_category(between_5_24_frame, between_5_24_serie)
-    between_25_99_factoids = calculate_added_factoids_by_editor_category(between_25_99_frame, between_25_99_serie)
-    highEq_100_factoids = calculate_added_factoids_by_editor_category(highEq_100_frame, highEq_100_serie)
+    new_users_factoids = calculate_added_factoids_by_editor_category(new_users_frame)
+    one_four_factoids = calculate_added_factoids_by_editor_category(one_four_frame)
+    between_5_24_factoids = calculate_added_factoids_by_editor_category(between_5_24_frame)
+    between_25_99_factoids = calculate_added_factoids_by_editor_category(between_25_99_frame)
+    highEq_100_factoids = calculate_added_factoids_by_editor_category(highEq_100_frame)
 
-    new_users_factoids.name = 'Average factoids by new users'
-    one_four_factoids.name = 'Average factoids by editors that have done btw. 1 and 4 edits'
-    between_5_24_factoids.name = 'Average factoids by editors that have done btw. 5 and 24 edits'
-    between_25_99_factoids.name = 'Average factoids by editors that have done btw. 25 and 99 edits'
-    highEq_100_factoids.name = 'Average factoids by editors that have done more than 99 edits'
+    new_users_factoids.name = 'By new users'
+    one_four_factoids.name = 'By users that have done btw. 1 and 4 edits'
+    between_5_24_factoids.name = 'By users that have done btw. 5 and 24 edits'
+    between_25_99_factoids.name = 'By users that have done btw. 25 and 99 edits'
+    highEq_100_factoids.name = 'By users that have done more than 99 edits'
+
+    return [new_users_factoids, one_four_factoids, between_5_24_factoids, between_25_99_factoids, highEq_100_factoids]
+
+    def deleted_factoids_by_active_editors_by_experience(data, index):
+    '''
+    Get the average number of factoids erased by users that belong to each category, in the Active editors by experience metric.
+    '''
+    data = filter_anonymous(data)
+    data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
+    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    format_data['nEdits'] = (format_data[['medits', 'contributor_id']].groupby(['contributor_id']))['medits'].cumsum()
+    format_data['nEdits_until_previous_month'] = (format_data[['nEdits','contributor_id']].groupby(['contributor_id']))['nEdits'].shift().fillna(-1)
+
+    new_users = format_data[generate_condition_users_by_number_of_edits(format_data, 0,0)]
+    new_users_serie = pd.Series(new_users.groupby(['timestamp']).size(), index).fillna(0)
+    one_four = format_data[generate_condition_users_by_number_of_edits(format_data, 1,4)]
+    one_four_serie = pd.Series(one_four.groupby(['timestamp']).size(), index).fillna(0)
+    between_5_24 = format_data[generate_condition_users_by_number_of_edits(format_data,5,24)]
+    between_5_24_serie = pd.Series(between_5_24.groupby(['timestamp']).size(), index).fillna(0)
+    between_25_99 = format_data[generate_condition_users_by_number_of_edits(format_data,25,99)]
+    between_25_99_serie = pd.Series(between_25_99.groupby(['timestamp']).size(), index).fillna(0)
+    highEq_100 = format_data[generate_condition_users_by_number_of_edits(format_data,100,0)]
+    highEq_100_serie = pd.Series(highEq_100.groupby(['timestamp']).size(), index).fillna(0)
+
+    new_users_frame = merge_dataframes(data, new_users)
+    one_four_frame = merge_dataframes(data, one_four)
+    between_5_24_frame = merge_dataframes(data, between_5_24)
+    between_25_99_frame = merge_dataframes(data, between_25_99)
+    highEq_100_frame = merge_dataframes(data, highEq_100)
+
+    new_users_factoids = calculate_deleted_factoids_by_editor_category(new_users_frame, new_users_serie)
+    one_four_factoids = calculate_deleted_factoids_by_editor_category(one_four_frame, one_four_serie)
+    between_5_24_factoids = calculate_deleted_factoids_by_editor_category(between_5_24_frame, between_5_24_serie)
+    between_25_99_factoids = calculate_deleted_factoids_by_editor_category(between_25_99_frame, between_25_99_serie)
+    highEq_100_factoids = calculate_deleted_factoids_by_editor_category(highEq_100_frame, highEq_100_serie)
+
+    new_users_factoids.name = 'By new users'
+    one_four_factoids.name = 'By users that have done btw. 1 and 4 edits'
+    between_5_24_factoids.name = 'By users that have done btw. 5 and 24 edits'
+    between_25_99_factoids.name = 'By users that have done btw. 25 and 99 edits'
+    highEq_100_factoids.name = 'By users that have done more than 99 edits'
 
     return [new_users_factoids, one_four_factoids, between_5_24_factoids, between_25_99_factoids, highEq_100_factoids]
 

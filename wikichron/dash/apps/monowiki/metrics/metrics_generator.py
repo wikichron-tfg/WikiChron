@@ -105,14 +105,8 @@ def generate_monowiki_metrics():
     metrics.append(HeatMap('edit_distributions_across_editors', 'Distribution of edits across editors (heatmap)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edit_distributions_across_editors, 'Distribution of editors (z axis) per distribution of edits (y axis).', 'Distribution of edits across editors (heatmap)'))
 
     #DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS
-    metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'Added factoids by editing experience', 'BAR GRAPH: Average number of factoids added by active editors by experience.'))
-    
-   
-
-    
-    metrics.append(LineGraph('surviving new editor', 'Surviving new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.surviving_new_editor, 'Surviving new editor', 'SCATTER GRAPH: Editor which, in the second month after being registrated, edits the wiki'))
-    metrics.append(LineGraph('returning new editor', 'Returning new editor', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.returning_new_editor, 'Returning new editor', 'SCATTER GRAPH: New editor who completes at least two edit sessions within 7 days afte registering.'))
-
+    metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'Added factoids by editing experience', 'BAR GRAPH: Number of added factoids by editors by editing experience.'))
+    metrics.append(BarGraph('deleted_factoids_by_edit_experience', 'Deleted factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.deleted_factoids_by_active_editors_by_experience, 'Deleted factoids by editing experience', 'BAR GRAPH: Average number of deleted factoids by editors by editing experience.'))
     
     # heatmap metrics
     metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_difference_across_articles, 'Bytes difference across articles', 'Number of articles (z axis) than contain these bytes (y axis).'))
