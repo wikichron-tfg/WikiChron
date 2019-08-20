@@ -105,8 +105,8 @@ def generate_monowiki_metrics():
     metrics.append(HeatMap('edit_distributions_across_editors', 'Distribution of edits across editors (heatmap)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edit_distributions_across_editors, 'Distribution of editors (z axis) per distribution of edits (y axis).', 'Distribution of edits across editors (heatmap)'))
 
     #DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS
-    metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'Added factoids by editing experience', 'BAR GRAPH: Number of added factoids by editors by editing experience.'))
-    metrics.append(BarGraph('deleted_factoids_by_edit_experience', 'Deleted factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.deleted_factoids_by_active_editors_by_experience, 'Deleted factoids by editing experience', 'BAR GRAPH: Average number of deleted factoids by editors by editing experience.'))
+    metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'Added factoids by editing experience', 'Number of added factoids by editors by editing experience.'))
+    metrics.append(BarGraph('deleted_factoids_by_edit_experience', 'Deleted factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.deleted_factoids_by_active_editors_by_experience, 'Deleted factoids by editing experience', 'Number of deleted factoids by editors by editing experience.'))
     
     # heatmap metrics
     metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_difference_across_articles, 'Bytes difference across articles', 'Number of articles (z axis) than contain these bytes (y axis).'))
