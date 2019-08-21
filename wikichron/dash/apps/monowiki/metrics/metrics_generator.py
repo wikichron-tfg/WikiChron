@@ -107,6 +107,8 @@ def generate_monowiki_metrics():
     #DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS
     metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'Added factoids by editing experience', 'Number of added factoids by editors by editing experience.'))
     metrics.append(BarGraph('deleted_factoids_by_edit_experience', 'Deleted factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.deleted_factoids_by_active_editors_by_experience, 'Deleted factoids by editing experience', 'Number of deleted factoids by editors by editing experience.'))
+    metrics.append(BarGraph('added_factoids_by_tenure', 'Added factoids by users by tenure', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_tenure, 'Added factoids by users by tenure', 'Number of added factoids by users by tenure.'))
+    metrics.append(BarGraph('deleted_factoids_by_tenure', 'Deleted factoids by tenure', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.deleted_factoids_by_tenure, 'Deleted factoids by users by tenure', 'Number of deleted factoids by users by tenure.'))
     
     # heatmap metrics
     metrics.append(HeatMap('bytes_difference_across_articles', 'Bytes difference across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_difference_across_articles, 'Bytes difference across articles', 'Number of articles (z axis) than contain these bytes (y axis).'))
