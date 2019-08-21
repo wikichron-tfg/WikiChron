@@ -706,6 +706,7 @@ def added_factoids_by_active_editors_by_experience(data, index):
     Get the number of factoids added by users that belong to each category, in the Active editors by experience metric.
     '''
     data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
     data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['nEdits'] = (format_data[['medits', 'contributor_id']].groupby(['contributor_id']))['medits'].cumsum()
@@ -742,6 +743,7 @@ def deleted_factoids_by_active_editors_by_experience(data, index):
     Get the average number of factoids deleted by users that belong to each category, in the Active editors by experience metric.
     '''
     data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
     data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['nEdits'] = (format_data[['medits', 'contributor_id']].groupby(['contributor_id']))['medits'].cumsum()
@@ -780,6 +782,7 @@ def added_factoids_by_tenure(data, index):
     Get the number of factoids added by users that belong to each category, in the Users by tenure metric.
     '''
     data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
     data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     
@@ -817,6 +820,7 @@ def deleted_factoids_by_tenure(data, index):
     Get the number of factoids deleted by users that belong to each category, in the Users by tenure metric.
     '''
     data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
     data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     
@@ -856,6 +860,7 @@ def added_factoids_by_date_of_last_edit(data, index):
     Get the number of factoids added by users that belong to each category, in the Users by the date of the last edit metric.
     '''
     data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
     data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['months'] = format_data.groupby('contributor_id')['timestamp'].diff().div(pd.Timedelta(days=30.44), fill_value=0).round().astype(int)
@@ -891,6 +896,7 @@ def deleted_factoids_by_date_of_last_edit(data, index):
     Get the number of factoids deleted by users that belong to each category, in the Users by the date of the last edit metric.
     '''
     data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
     data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['months'] = format_data.groupby('contributor_id')['timestamp'].diff().div(pd.Timedelta(days=30.44), fill_value=0).round().astype(int)
