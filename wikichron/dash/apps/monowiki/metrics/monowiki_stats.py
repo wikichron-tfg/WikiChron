@@ -708,27 +708,25 @@ def added_factoids_by_active_editors_by_experience(data, index):
     data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]
     data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
-    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
-    format_data['nEdits'] = (format_data[['medits', 'contributor_id']].groupby(['contributor_id']))['medits'].cumsum()
-    format_data['nEdits_until_previous_month'] = (format_data[['nEdits','contributor_id']].groupby(['contributor_id']))['nEdits'].shift().fillna(-1)
+    data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
+    data['added_factoids'] = data.groupby('page_id').factoids.diff().fillna(data.factoids)
+    data['number_added_factoids'] = data['added_factoids'].apply(len)
 
-    new_users = format_data[generate_condition_users_by_number_of_edits(format_data, 0,0)]
-    one_four = format_data[generate_condition_users_by_number_of_edits(format_data, 1,4)]
-    between_5_24 = format_data[generate_condition_users_by_number_of_edits(format_data,5,24)]
-    between_25_99 = format_data[generate_condition_users_by_number_of_edits(format_data,25,99)]
-    highEq_100 = format_data[generate_condition_users_by_number_of_edits(format_data,100,0)]
+    data = data.groupby(['contributor_id','number_added_factoids',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    data['nEdits'] = (data[['medits', 'contributor_id']].groupby(['contributor_id']))['medits'].cumsum()
+    data['nEdits_until_previous_month'] = (data[['nEdits','contributor_id']].groupby(['contributor_id']))['nEdits'].shift().fillna(-1)
 
-    new_users_frame = merge_dataframes(data, new_users)
-    one_four_frame = merge_dataframes(data, one_four)
-    between_5_24_frame = merge_dataframes(data, between_5_24)
-    between_25_99_frame = merge_dataframes(data, between_25_99)
-    highEq_100_frame = merge_dataframes(data, highEq_100)
+    new_users = data[generate_condition_users_by_number_of_edits(data, 0,0)]
+    one_four = data[generate_condition_users_by_number_of_edits(data, 1,4)]
+    between_5_24 = data[generate_condition_users_by_number_of_edits(data,5,24)]
+    between_25_99 = data[generate_condition_users_by_number_of_edits(data,25,99)]
+    highEq_100 = data[generate_condition_users_by_number_of_edits(data,100,0)]
 
-    new_users_factoids = calculate_added_factoids_by_editor_category(new_users_frame)
-    one_four_factoids = calculate_added_factoids_by_editor_category(one_four_frame)
-    between_5_24_factoids = calculate_added_factoids_by_editor_category(between_5_24_frame)
-    between_25_99_factoids = calculate_added_factoids_by_editor_category(between_25_99_frame)
-    highEq_100_factoids = calculate_added_factoids_by_editor_category(highEq_100_frame)
+    new_users_factoids = new_users.groupby(['timestamp'])['number_added_factoids'].sum()
+    one_four_factoids = one_four.groupby(['timestamp'])['number_added_factoids'].sum()
+    between_5_24_factoids = between_5_24.groupby(['timestamp'])['number_added_factoids'].sum()
+    between_25_99_factoids = between_25_99.groupby(['timestamp'])['number_added_factoids'].sum()
+    highEq_100_factoids = highEq_100.groupby(['timestamp'])['number_added_factoids'].sum()
 
     new_users_factoids.name = 'By new users'
     one_four_factoids.name = 'By users that have done btw. 1 and 4 edits'
