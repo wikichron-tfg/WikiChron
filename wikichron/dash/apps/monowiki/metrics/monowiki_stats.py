@@ -712,15 +712,10 @@ def added_factoids_by_active_editors_by_experience(data, index):
     format_data['nEdits_until_previous_month'] = (format_data[['nEdits','contributor_id']].groupby(['contributor_id']))['nEdits'].shift().fillna(-1)
 
     new_users = format_data[generate_condition_users_by_number_of_edits(format_data, 0,0)]
-    new_users_serie = pd.Series(new_users.groupby(['timestamp']).size(), index).fillna(0)
     one_four = format_data[generate_condition_users_by_number_of_edits(format_data, 1,4)]
-    one_four_serie = pd.Series(one_four.groupby(['timestamp']).size(), index).fillna(0)
     between_5_24 = format_data[generate_condition_users_by_number_of_edits(format_data,5,24)]
-    between_5_24_serie = pd.Series(between_5_24.groupby(['timestamp']).size(), index).fillna(0)
     between_25_99 = format_data[generate_condition_users_by_number_of_edits(format_data,25,99)]
-    between_25_99_serie = pd.Series(between_25_99.groupby(['timestamp']).size(), index).fillna(0)
     highEq_100 = format_data[generate_condition_users_by_number_of_edits(format_data,100,0)]
-    highEq_100_serie = pd.Series(highEq_100.groupby(['timestamp']).size(), index).fillna(0)
 
     new_users_frame = merge_dataframes(data, new_users)
     one_four_frame = merge_dataframes(data, one_four)
@@ -753,15 +748,10 @@ def deleted_factoids_by_active_editors_by_experience(data, index):
     format_data['nEdits_until_previous_month'] = (format_data[['nEdits','contributor_id']].groupby(['contributor_id']))['nEdits'].shift().fillna(-1)
 
     new_users = format_data[generate_condition_users_by_number_of_edits(format_data, 0,0)]
-    new_users_serie = pd.Series(new_users.groupby(['timestamp']).size(), index).fillna(0)
     one_four = format_data[generate_condition_users_by_number_of_edits(format_data, 1,4)]
-    one_four_serie = pd.Series(one_four.groupby(['timestamp']).size(), index).fillna(0)
     between_5_24 = format_data[generate_condition_users_by_number_of_edits(format_data,5,24)]
-    between_5_24_serie = pd.Series(between_5_24.groupby(['timestamp']).size(), index).fillna(0)
     between_25_99 = format_data[generate_condition_users_by_number_of_edits(format_data,25,99)]
-    between_25_99_serie = pd.Series(between_25_99.groupby(['timestamp']).size(), index).fillna(0)
     highEq_100 = format_data[generate_condition_users_by_number_of_edits(format_data,100,0)]
-    highEq_100_serie = pd.Series(highEq_100.groupby(['timestamp']).size(), index).fillna(0)
 
     new_users_frame = merge_dataframes(data, new_users)
     one_four_frame = merge_dataframes(data, one_four)
@@ -858,6 +848,79 @@ def deleted_factoids_by_tenure(data, index):
     more_twelve_factoids.name = 'By users first edit more than 12 months ago'
 
     return [new_users_factoids, one_three_factoids, four_six_factoids, six_twelve_factoids, more_twelve_factoids, 1]
+
+############################ Factoids by Users by date of the last edit #########################################
+
+def added_factoids_by_date_of_last_edit(data, index):
+    '''
+    Get the number of factoids added by users that belong to each category, in the Users by the date of the last edit metric.
+    '''
+    data = filter_anonymous(data)
+    data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
+    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    format_data['months'] = format_data.groupby('contributor_id')['timestamp'].diff().div(pd.Timedelta(days=30.44), fill_value=0).round().astype(int)
+    
+    new_users = format_data[format_data['months'] == 0]
+    one_month = format_data[format_data['months'] == 1]
+    two_three_months = format_data[(format_data['months'] == 2) | (format_data['months'] == 3)]
+    four_six_months = format_data[(format_data['months'] >= 4) & (format_data['months'] <= 6)]
+    more_six_months = format_data[format_data['months'] > 6]
+
+    new_users_frame = merge_dataframes(data, new_users)
+    one_month_frame = merge_dataframes(data, one_month)
+    two_three_months_frame = merge_dataframes(data, two_three_months)
+    four_six_months_frame = merge_dataframes(data, four_six_months)
+    more_six_months_frame = merge_dataframes(data, more_six_months)
+
+    new_users_factoids = calculate_added_factoids_by_editor_category(new_users_frame)
+    one_month_factoids = calculate_added_factoids_by_editor_category(one_month_frame)
+    two_three_months_factoids = calculate_added_factoids_by_editor_category(two_three_months_frame)
+    four_six_months_factoids = calculate_added_factoids_by_editor_category(four_six_months_frame)
+    more_six_months_factoids = calculate_added_factoids_by_editor_category(more_six_months_frame)
+
+    new_users_factoids.name = 'By new users'
+    one_month_factoids.name = 'By users last edit 1 month ago'
+    two_three_months_factoids.name = 'By users last edit between 2 and 3 months ago'
+    four_six_months_factoids.name = 'By users last edit between 4 and 6 months ago'
+    more_six_months_factoids.name = 'By users last edit more than 6 months ago'
+
+    return [new_users_factoids, one_month_factoids, two_three_months_factoids, four_six_months_factoids, more_six_months_factoids, 1]
+
+def deleted_factoids_by_date_of_last_edit(data, index):
+    '''
+    Get the number of factoids deleted by users that belong to each category, in the Users by the date of the last edit metric.
+    '''
+    data = filter_anonymous(data)
+    data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
+    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    format_data['months'] = format_data.groupby('contributor_id')['timestamp'].diff().div(pd.Timedelta(days=30.44), fill_value=0).round().astype(int)
+    
+    new_users = format_data[format_data['months'] == 0]
+    one_month = format_data[format_data['months'] == 1]
+    two_three_months = format_data[(format_data['months'] == 2) | (format_data['months'] == 3)]
+    four_six_months = format_data[(format_data['months'] >= 4) & (format_data['months'] <= 6)]
+    more_six_months = format_data[format_data['months'] > 6]
+
+    new_users_frame = merge_dataframes(data, new_users)
+    one_month_frame = merge_dataframes(data, one_month)
+    two_three_months_frame = merge_dataframes(data, two_three_months)
+    four_six_months_frame = merge_dataframes(data, four_six_months)
+    more_six_months_frame = merge_dataframes(data, more_six_months)
+
+    new_users_factoids = calculate_deleted_factoids_by_editor_category(new_users_frame)
+    one_month_factoids = calculate_deleted_factoids_by_editor_category(one_month_frame)
+    two_three_months_factoids = calculate_deleted_factoids_by_editor_category(two_three_months_frame)
+    four_six_months_factoids = calculate_deleted_factoids_by_editor_category(four_six_months_frame)
+    more_six_months_factoids = calculate_deleted_factoids_by_editor_category(more_six_months_frame)
+
+    new_users_factoids.name = 'By new users'
+    one_month_factoids.name = 'By users last edit 1 month ago'
+    two_three_months_factoids.name = 'By users last edit between 2 and 3 months ago'
+    four_six_months_factoids.name = 'By users last edit between 4 and 6 months ago'
+    more_six_months_factoids.name = 'By users last edit more than 6 months ago'
+
+    return [new_users_factoids, one_month_factoids, two_three_months_factoids, four_six_months_factoids, more_six_months_factoids, 1]
+
 
 ############################# HEATMAP METRICS ##############################################
 
