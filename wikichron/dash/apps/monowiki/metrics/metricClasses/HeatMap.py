@@ -44,7 +44,7 @@ class HeatMap(Metric):
         generate a HeatMap graph.
         returns a filled graph_list.
         """
-        
+
         return [go.Heatmap(z=self.zaxis,
                         x=time_index,
                         y=self.yaxis,
