@@ -66,6 +66,7 @@ def generate_classic_metrics():
 
     # FACTOIDS
     metrics.append(LineGraph('Monthly added factoids', 'Monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids, "Monthly number of added factoids to the main namespace of the wiki.", 'Monthly added factoids'))
+    metrics.append(LineGraph('Monthly deleted factoids', 'Monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
 
     # DISTRIBUTION
     metrics.append(LineGraph('gini_accum', 'Gini coefficient', MetricCategory.DISTRIBUTION, classic_stats.gini_accum, 'Gini coefficient (accumulated)', 'Gini coefficient'))

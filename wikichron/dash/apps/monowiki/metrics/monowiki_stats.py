@@ -751,7 +751,7 @@ def deleted_factoids_by_active_editors_by_experience(data, index):
     idx = data.groupby('contributor_id').head(1).index
     data.loc[idx, 'deleted_factoids'] = data.loc[idx, 'deleted_factoids'].apply(lambda x: set())
     data.drop('factoids_history', axis=1, inplace=True)
-    data['number_deleted_factoids'] = data['deleted_factoids'].apply(len)
+    data['number_deleted_factoids'] = data['deleted_factoids'].str.len()
 
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['number_deleted_factoids'] = (data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')])['number_deleted_factoids'].sum().reset_index())['number_deleted_factoids']
@@ -831,7 +831,7 @@ def deleted_factoids_by_tenure(data, index):
     idx = data.groupby('contributor_id').head(1).index
     data.loc[idx, 'deleted_factoids'] = data.loc[idx, 'deleted_factoids'].apply(lambda x: set())
     data.drop('factoids_history', axis=1, inplace=True)
-    data['number_deleted_factoids'] = data['deleted_factoids'].apply(len)
+    data['number_deleted_factoids'] = data['deleted_factoids'].str.len()
 
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['number_deleted_factoids'] = (data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')])['number_deleted_factoids'].sum().reset_index())['number_deleted_factoids']
@@ -910,7 +910,7 @@ def deleted_factoids_by_date_of_last_edit(data, index):
     idx = data.groupby('contributor_id').head(1).index
     data.loc[idx, 'deleted_factoids'] = data.loc[idx, 'deleted_factoids'].apply(lambda x: set())
     data.drop('factoids_history', axis=1, inplace=True)
-    data['number_deleted_factoids'] = data['deleted_factoids'].apply(len)
+    data['number_deleted_factoids'] = data['deleted_factoids'].str.len()
 
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['number_deleted_factoids'] = (data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')])['number_deleted_factoids'].sum().reset_index())['number_deleted_factoids']

@@ -329,9 +329,24 @@ def surviving_new_editors(data, index):
 
 # Factoid Metrics
 
+def monthly_deleted_factoids(data, index):
+    data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
+
+    data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
+    data['factoids_history'] = pd.concat([pd.Series([set()]), data['factoids'][:-1]]).reset_index(drop=True)
+    data['deleted_factoids'] = data['factoids_history'] - data['factoids']
+    idx = data.groupby('contributor_id').head(1).index
+    data.loc[idx, 'deleted_factoids'] = data.loc[idx, 'deleted_factoids'].apply(lambda x: set())
+    data.drop('factoids_history', axis=1, inplace=True)
+    data['number_deleted_factoids'] = data['deleted_factoids'].str.len()
+
+    return (data.groupby(pd.Grouper(key='timestamp', freq='MS'))['number_deleted_factoids'].sum())
+
 def monthly_added_factoids(data, index):
     data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]
+
     data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
     data['added_factoids'] = data.groupby('page_id').factoids.diff().fillna(data.factoids)
     data['number_added_factoids'] = data['added_factoids'].apply(len)
