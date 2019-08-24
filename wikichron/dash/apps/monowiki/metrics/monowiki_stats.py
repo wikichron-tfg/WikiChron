@@ -700,7 +700,14 @@ def number_of_edits_by_last_edit_abs(data, index):
     return [new_users, one_month, two_three_months, four_six_months, more_six_months, 1]
 
 ############################ Factoids by Active editors by experience #########################################
-
+def url_by_months(data,index):
+    data = filter_anonymous(data)
+    dataString['edit_content']=data['edit_content'].apply(str)
+    countUrl['count']=dataString['edit_content'].apply(lambda x:x.count('[['))
+    series = countUrl.groupby(pd.Grouper(key ='timestamp', freq='MS'))['count'].sum()
+    if index is not None:
+       series= series.reindex(index, fill_value=0)
+    return series
 def added_factoids_by_active_editors_by_experience(data, index):
     '''
     Get the number of factoids added by users that belong to each category, in the Active editors by experience metric.
