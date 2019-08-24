@@ -702,22 +702,24 @@ def number_of_edits_by_last_edit_abs(data, index):
 ############################ Factoids by Active editors by experience #########################################
 def url_by_months(data,index):
     data = filter_anonymous(data)
-    dataString['edit_content']=data['edit_content'].apply(str)
-    countUrl['count']=dataString['edit_content'].apply(lambda x:x.count('[['))
-    series = countUrl.groupby(pd.Grouper(key ='timestamp', freq='MS'))['count'].sum()
+    data['edit_content'] = data['edit_content'].apply(str)
+    data['count'] = data['edit_content'].apply(lambda x:x.count('[['))
+    series = data.groupby(pd.Grouper(key ='timestamp', freq='MS'))['count'].sum()
     if index is not None:
        series= series.reindex(index, fill_value=0)
     return series
+
 def pic_by_months(data, index):
     data = filter_anonymous(data)
-    dataString['edit_content']=data['edit_content'].apply(str)
-    countJPG['countJPG']=dataString['edit_content'].apply(lambda x:x.count('.jpg'))
-    countPNG['countPNG']=countJPG['edit_content'].apply(lambda x:x.count('.png'))
-    totalCount['count']=countPNG['countJPG'] + countPNG['countPNG']
-    series = totalCount.groupby(pd.Grouper(key ='timestamp', freq='MS'))['count'].sum()
+    data['edit_content'] = data['edit_content'].apply(str)
+    data['countJPG'] = data['edit_content'].apply(lambda x:x.count('.jpg'))
+    data['countPNG'] = data['edit_content'].apply(lambda x:x.count('.png'))
+    data['count'] = data['countJPG'] + data['countPNG']
+    series = data.groupby(pd.Grouper(key ='timestamp', freq='MS'))['count'].sum()
     if index is not None:
         series= series.reindex(index, fill_value=0)
     return series
+
 def added_factoids_by_active_editors_by_experience(data, index):
     '''
     Get the number of factoids added by users that belong to each category, in the Active editors by experience metric.

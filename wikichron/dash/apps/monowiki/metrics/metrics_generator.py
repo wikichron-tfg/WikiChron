@@ -74,6 +74,8 @@ def generate_classic_metrics():
     # FACTOIDS
     metrics.append(LineGraph('monthly_added_factoids', 'Monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids, "Monthly number of added factoids to the main namespace of the wiki.", 'Monthly added factoids'))
     metrics.append(LineGraph('monthly_deleted_factoids', 'Monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
+    metrics.append(LineGraph('img_by_months', 'Count pictures by months', MetricCategory.FACTOIDS, monowiki_stats.pic_by_months, 'Number of picture by months', 'Number of picture by months'))
+    metrics.append(LineGraph('url_by_months', 'Count url by months', MetricCategory.FACTOIDS, monowiki_stats.url_by_months, 'Number of url by months', 'Number of url by months'))
     metrics.append(LineGraph('monthly_added_factoids_acum', 'Total monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids_acum, "Total monthly number of added factoids to the main namespace of the wiki.", 'Total monthly added factoids'))
     metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids_acum, "Total monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
     
@@ -119,8 +121,6 @@ def generate_monowiki_metrics():
     metrics.append(HeatMap('edit_distributions_across_editors', 'Distribution of edits across editors (heatmap)', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edit_distributions_across_editors, 'Distribution of editors (z axis) per distribution of edits (y axis).', 'Distribution of edits across editors (heatmap)'))
 
     #DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS
-	metrics.append(LineGraph('img_by_months', 'Count pictures by months', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.pic_by_months, 'Number of picture by months', 'Number of picture by months'))
-    metrics.append(LineGraph('url_by_months', 'Count url by months', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.url_by_months, 'Number of url by months', 'Number of url by months'))
     metrics.append(BarGraph('added_factoids_by_edit_experience', 'Added factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_active_editors_by_experience, 'Added factoids by editing experience', 'Number of added factoids by editors by editing experience.'))
     metrics.append(BarGraph('deleted_factoids_by_edit_experience', 'Deleted factoids by editing experience', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.deleted_factoids_by_active_editors_by_experience, 'Deleted factoids by editing experience', 'Number of deleted factoids by editors by editing experience.'))
     metrics.append(BarGraph('added_factoids_by_tenure', 'Added factoids by users by tenure', MetricCategory.DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS, monowiki_stats.added_factoids_by_tenure, 'Added factoids by users by tenure', 'Number of added factoids by users by tenure.'))
