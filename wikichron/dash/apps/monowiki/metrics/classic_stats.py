@@ -258,8 +258,24 @@ def percentage_edits_by_anonymous_accum(data, index):
     series *= 100 # we want it to be displayed in percentage
     return series
 
+def added_per_deleted_factoids_monthly(data, index):
+    return (monthly_added_factoids(data, index) / monthly_deleted_factoids(data, index))
+	
+def added_per_deleted_factoids_acum(data, index):
+    return (monthly_added_factoids_acum(data, index) / monthly_deleted_factoids_acum(data, index))
 
-
+def added_factoids_per_users_anonymous_monthly(data, index):
+    return (monthly_added_factoids(data, index) / users_anonymous_active(data, index))
+	
+def deleted_factoids_per_users_anonymous_monthly(data, index):
+    return (monthly_deleted_factoids(data, index) / users_anonymous_active(data, index))
+	
+def added_factoids_per_users_new_monthly(data, index):
+    return (monthly_added_factoids(data, index) / users_new(data, index))
+	
+def deleted_factoids_per_users_new_monthly(data, index):
+    return (monthly_deleted_factoids(data, index) / users_new(data, index))	
+	
 ########################################################################
 
 # Retention Metrics
@@ -330,7 +346,7 @@ def surviving_new_editors(data, index):
 # Factoid Metrics
 
 def monthly_deleted_factoids(data, index):
-    data = filter_anonymous(data)
+    #data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]
 
     data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
@@ -344,7 +360,7 @@ def monthly_deleted_factoids(data, index):
     return (data.groupby(pd.Grouper(key='timestamp', freq='MS'))['number_deleted_factoids'].sum())
 
 def monthly_added_factoids(data, index):
-    data = filter_anonymous(data)
+    #data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]
 
     data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
@@ -352,6 +368,14 @@ def monthly_added_factoids(data, index):
     data['number_added_factoids'] = data['added_factoids'].apply(len)
 
     return (data.groupby(pd.Grouper(key='timestamp', freq='MS'))['number_added_factoids'].sum())
+	
+def monthly_added_factoids_acum(data, index):
+    return (monthly_added_factoids(data, index).cumsum())
+	
+def monthly_deleted_factoids_acum(data, index):
+    return (monthly_deleted_factoids(data, index).cumsum())
+	
+
 ########################################################################
 # Distribution Of Participation
 

@@ -56,18 +56,28 @@ def generate_classic_metrics():
     metrics.append(LineGraph('edits_in_articles_per_users_monthly', 'Article edits per user', MetricCategory.RATIOS, classic_stats.edits_in_articles_per_users_monthly, 'Number of edits in articles per number of users for each month', 'Article edits per user'))
     metrics.append(LineGraph('edits_per_page_monthly', 'Edits per edited pages', MetricCategory.RATIOS, classic_stats.edits_per_pages_monthly, 'Number of edits for every month per number of pages edited that month', 'Edits per edited pages'))
     metrics.append(LineGraph('percentage_edits_by_anonymous_monthly', 'Anonymous edits (%)', MetricCategory.RATIOS, classic_stats.percentage_edits_by_anonymous_monthly, 'Percentage of edits made by anonymous users of the total edits.', 'Anonymous edits (%)'))
+    metrics.append(LineGraph('added_per_deleted_factoids_monthly', 'Added factoids per deleted factoids', MetricCategory.RATIOS, classic_stats.added_per_deleted_factoids_monthly, "Number of added factoids per number of deleted factoids to the main namespace of the wiki", 'Added factoids per deleted factoids'))   
+    metrics.append(LineGraph('added_factoids_per_users_anonymous_monthly', 'Added factoids per active anonymous users', MetricCategory.RATIOS, classic_stats.added_factoids_per_users_anonymous_monthly, "Number of added factoids per anonymous users who have made at least one contribution in a month", 'Added factoids per active anonymous users'))   
+    metrics.append(LineGraph('deleted_factoids_per_users_anonymous_monthly', 'Deleted factoids per active anonymous users', MetricCategory.RATIOS, classic_stats.deleted_factoids_per_users_anonymous_monthly, "Number of deleted factoids per anonymous users who have made at least one contribution in a month", 'Deleted factoids per active anonymous users'))   
+    metrics.append(LineGraph('added_factoids_per_users_new_monthly', 'Added factoids per new users', MetricCategory.RATIOS, classic_stats.added_factoids_per_users_new_monthly, "Number of added factoids per users who have made at least one edition grouped by the month they did their first edit", 'Added factoids per new users'))   
+    metrics.append(LineGraph('deleted_factoids_per_users_new_monthly', 'Deleted factoids per new users', MetricCategory.RATIOS, classic_stats.deleted_factoids_per_users_new_monthly, "Number of deleted factoids per users who have made at least one edition grouped by the month they did their first edit", 'Deleted factoids per new users'))   
     metrics.append(LineGraph('edits_in_articles_per_users_accum', 'Total articles edits per user', MetricCategory.RATIOS, classic_stats.edits_in_articles_per_users_accum, 'Number of total edits in articles per number of users until a given month', 'Total articles edits per user'))
     metrics.append(LineGraph('edits_per_pages_accum', 'Total edits per page', MetricCategory.RATIOS, classic_stats.edits_per_pages_accum, 'Number of total edits per number of total pages' 'Total edits per page', 'Total edits per page'))
     metrics.append(LineGraph('percentage_edits_by_anonymous_accum', 'Total anonymous edits (%)', MetricCategory.RATIOS, classic_stats.percentage_edits_by_anonymous_accum, 'Percentage, per month, of edits made by anonymous users of the total edits.', 'Total anonymous edits (%)'))
+    metrics.append(LineGraph('added_per_deleted_factoids_acum', 'Total added factoids per deleted factoids', MetricCategory.RATIOS, classic_stats.added_per_deleted_factoids_acum, "Number of total added factoids per number of total deleted factoids to the main namespace of the wiki", 'Total added factoids per deleted factoids'))
 
+	
     # RETENTION
     metrics.append(LineGraph('returning_new_editors', 'Returning new editors', MetricCategory.RETENTION, classic_stats.returning_new_editors, "Number of new users who completes at least two edit sessions (60') within the first 30 days since registration. Based on a WMF's metric.", 'Returning new editors'))
     metrics.append(LineGraph('surviving_new_editors', 'Surviving new editors', MetricCategory.RETENTION, classic_stats.surviving_new_editors, "Numer of new users who completes at least one edit within the first 30 days since registration and also completes another edit in the survival period, (i.e. the following 30 days). Based on a WMF's metric.", 'Surviving new editors',))
 
     # FACTOIDS
-    metrics.append(LineGraph('Monthly added factoids', 'Monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids, "Monthly number of added factoids to the main namespace of the wiki.", 'Monthly added factoids'))
-    metrics.append(LineGraph('Monthly deleted factoids', 'Monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
-
+    metrics.append(LineGraph('monthly_added_factoids', 'Monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids, "Monthly number of added factoids to the main namespace of the wiki.", 'Monthly added factoids'))
+    metrics.append(LineGraph('monthly_deleted_factoids', 'Monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
+    metrics.append(LineGraph('monthly_added_factoids_acum', 'Total monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids_acum, "Total monthly number of added factoids to the main namespace of the wiki.", 'Total monthly added factoids'))
+    metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids_acum, "Total monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
+    
+	
     # DISTRIBUTION
     metrics.append(LineGraph('gini_accum', 'Gini coefficient', MetricCategory.DISTRIBUTION, classic_stats.gini_accum, 'Gini coefficient (accumulated)', 'Gini coefficient'))
     metrics.append(LineGraph('ratio_10_90', '10:90 ratio', MetricCategory.DISTRIBUTION, classic_stats.ratio_10_90, 'Contributions of the top ten percent more active users between the 90% percent less active', '10:90 ratio'))
