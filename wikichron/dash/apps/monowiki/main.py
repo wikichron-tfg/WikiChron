@@ -63,7 +63,7 @@ def generate_graphs(metrics, wikis, relative_time):
 
     for metric_idx in range(len(metrics)):
         graphs_list[metric_idx] = metrics[metric_idx].draw(time_index)
-        
+
     return graphs_list
 
 

@@ -71,6 +71,7 @@ class BarGraph(Metric):
         colors = list(map(lambda x: 'rgb(' + str(int(x[0])) + ', ' + str(int(x[1])) + ', ' + str(int(x[2])) + ')', colors_r))
         return colors
 
+
     def draw(self, time_index):
         """
         generate a Bar graph.
@@ -94,8 +95,9 @@ class BarGraph(Metric):
                 submetric1 = 9
             else:
                 submetric1 = submetric
+
             graphs_list[submetric] = go.Bar(
-                                x=x_axis,
+                                x=time_index,
                                 y=submetric_data,
                                 name=submetric_data.name,
                                 marker={'color': colors[submetric1]}
