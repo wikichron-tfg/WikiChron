@@ -846,6 +846,58 @@ def deleted_factoids_by_active_editors_by_experience(data, index):
 
     return [new_users_factoids, one_four_factoids, between_5_24_factoids, between_25_99_factoids, highEq_100_factoids, 1]
 
+############################ Factoids by Users by edit streak #########################################
+def added_factoids_by_edit_streak(data, index):
+    '''
+    Get the number of factoids added by users that belong to each category, in the Users by edit streak.
+    '''
+    data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
+    data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
+    data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
+    data['added_factoids'] = data.groupby('page_id').factoids.diff().fillna(data.factoids)
+    data['number_added_factoids'] = data['added_factoids'].apply(len)
+	
+    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    format_data['number_of_factoids'] = (data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')])['number_added_factoids'].sum().reset_index())['number_added_factoids']
+
+    this_month = current_streak_x_or_y_months_in_a_row(format_data, index, 1, 0, 'factoids')
+    two_three_months = current_streak_x_or_y_months_in_a_row(format_data, index, 1, 3, 'factoids')
+    four_six_months = current_streak_x_or_y_months_in_a_row(format_data, index, 3, 6, 'factoids')
+    more_six = current_streak_x_or_y_months_in_a_row(format_data, index, 6, 0, 'factoids')
+	
+    set_category_name([this_month, two_three_months, four_six_months, more_six], ['1 month editing', 'Btw. 2 and 3 consecutive months', 'Btw. 4 and 6 consecutive months', 'More than 6 consecutive months'])
+    
+    return [this_month, two_three_months, four_six_months, more_six, 1]
+	
+def deleted_factoids_by_edit_streak(data, index):
+    '''
+    Get the number of factoids deleted by users that belong to each category, in the Users by edit streak metric.
+    '''
+    data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
+    data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
+
+    data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
+    data['factoids_history'] = pd.concat([pd.Series([set()]), data['factoids'][:-1]]).reset_index(drop=True)
+    data['deleted_factoids'] = data['factoids_history'] - data['factoids']
+    idx = data.groupby('contributor_id').head(1).index
+    data.loc[idx, 'deleted_factoids'] = data.loc[idx, 'deleted_factoids'].apply(lambda x: set())
+    data.drop('factoids_history', axis=1, inplace=True)
+    data['number_deleted_factoids'] = data['deleted_factoids'].str.len()
+	
+    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    format_data['number_of_factoids'] = (data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')])['number_deleted_factoids'].sum().reset_index())['number_deleted_factoids']
+
+    this_month = current_streak_x_or_y_months_in_a_row(format_data, index, 1, 0, 'factoids')
+    two_three_months = current_streak_x_or_y_months_in_a_row(format_data, index, 1, 3, 'factoids')
+    four_six_months = current_streak_x_or_y_months_in_a_row(format_data, index, 3, 6, 'factoids')
+    more_six = current_streak_x_or_y_months_in_a_row(format_data, index, 6, 0, 'factoids')
+	
+    set_category_name([this_month, two_three_months, four_six_months, more_six], ['1 month editing', 'Btw. 2 and 3 consecutive months', 'Btw. 4 and 6 consecutive months', 'More than 6 consecutive months'])
+    
+    return [this_month, two_three_months, four_six_months, more_six, 1]
+
 ############################ Factoids by Users by tenure #########################################
 
 def added_factoids_by_tenure(data, index):
