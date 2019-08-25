@@ -18,7 +18,6 @@ import json
 from urllib.parse import urlencode
 
 
-import colorlover as cl
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
