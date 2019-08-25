@@ -399,6 +399,31 @@ def users_first_edit(data, index):
     
     return [this_month, one_three, four_six, six_twelve, more_twelve, 1]
 
+def users_first_edit_abs(data, index):
+    '''Calculate the monthly percentage of users whose first edit was between 1 and 3, 4 and 6, 6 and 12, and more than 12 months ago
+    '''
+    data = filter_anonymous(data)
+    monthly_total_users = data.groupby([pd.Grouper(key='timestamp', freq='MS'), 'contributor_id']).size().reset_index()
+    monthly_total_users = monthly_total_users.groupby(pd.Grouper(key='timestamp', freq='MS')).size()
+    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    
+    mins = format_data.groupby('contributor_id')['timestamp'].transform('min')
+    format_data['months'] = format_data['timestamp'].sub(mins).div(pd.Timedelta(1, 'M')).round().astype(int)
+    
+    this_month = (users_new(data, index) / monthly_total_users) * 100
+    one_three = ((pd.Series(format_data[(format_data['months'] >= 1) & (format_data['months'] <= 3)].groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users) * 100
+    four_six = ((pd.Series(format_data[(format_data['months'] >= 4) & (format_data['months'] <= 6)].groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users) * 100
+    six_twelve = ((pd.Series(format_data[(format_data['months'] >= 7) & (format_data['months'] <= 12)].groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users) * 100
+    more_twelve = ((pd.Series(format_data[format_data['months'] >= 13].groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users) * 100
+
+    this_month.name = 'New users'
+    one_three.name = 'Btw. 1 and 3 months ago'
+    four_six.name = 'Btw. 4 and 6 months ago'
+    six_twelve.name = 'Btw. 6 and 12 months ago'
+    more_twelve.name = 'More than 12 months ago'
+    
+    return [this_month, one_three, four_six, six_twelve, more_twelve, 1]
+
 ############################ Users by the date of the last edit ###########################################################################
 
 def users_last_edit(data, index):
@@ -414,6 +439,30 @@ def users_last_edit(data, index):
     two_three_months = pd.Series((format_data[(format_data['months'] == 2) | (format_data['months'] == 3)]).groupby(['timestamp']).size(), index).fillna(0)
     four_six_months = pd.Series((format_data[(format_data['months'] >= 4) & (format_data['months'] <= 6)]).groupby(['timestamp']).size(), index).fillna(0)
     more_six_months = pd.Series((format_data[format_data['months'] > 6]).groupby(['timestamp']).size(), index).fillna(0)
+
+    new_users.name = 'New users'
+    one_month.name = '1 month ago'
+    two_three_months.name = 'Btw. 2 and 3 months ago'
+    four_six_months.name = 'Btw. 4 and 6 months ago'
+    more_six_months.name = 'More than six months ago'
+
+    return [new_users, one_month, two_three_months, four_six_months, more_six_months, 1]
+
+def users_last_edit_abs(data, index):
+    '''
+    Get the monthly percentage of users whose last edit was less than 1, between 2 and 3, 4 and 6, and more than 6 months ago
+    '''
+    data = filter_anonymous(data)
+    monthly_total_users = data.groupby([pd.Grouper(key='timestamp', freq='MS'), 'contributor_id']).size().reset_index()
+    monthly_total_users = monthly_total_users.groupby(pd.Grouper(key='timestamp', freq='MS')).size()
+    format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
+    format_data['months'] = format_data.groupby('contributor_id')['timestamp'].diff().div(pd.Timedelta(days=30.44), fill_value=0).round().astype(int)
+
+    new_users = (users_new(data, index) / monthly_total_users) * 100
+    one_month = ((pd.Series((format_data[format_data['months'] == 1]).groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users)*100
+    two_three_months = ((pd.Series((format_data[(format_data['months'] == 2) | (format_data['months'] == 3)]).groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users)*100
+    four_six_months = ((pd.Series((format_data[(format_data['months'] >= 4) & (format_data['months'] <= 6)]).groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users)*100
+    more_six_months = ((pd.Series((format_data[format_data['months'] > 6]).groupby(['timestamp']).size(), index).fillna(0)) / monthly_total_users)*100
 
     new_users.name = 'New users'
     one_month.name = '1 month ago'
