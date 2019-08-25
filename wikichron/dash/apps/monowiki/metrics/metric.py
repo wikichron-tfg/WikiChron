@@ -25,6 +25,7 @@ class MetricCategory(Enum):
     RATIOS = 'Ratios'
     RETENTION = 'Retention'
     FACTOIDS = 'Factoids'
+    EDIT_CONTENT = 'Edit content'
     DISTRIBUTION = 'Distribution of Participation'
 
 class Metric(ABC):

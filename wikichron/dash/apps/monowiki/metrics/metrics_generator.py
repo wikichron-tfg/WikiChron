@@ -74,11 +74,12 @@ def generate_classic_metrics():
     # FACTOIDS
     metrics.append(LineGraph('monthly_added_factoids', 'Monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids, "Monthly number of added factoids to the main namespace of the wiki.", 'Monthly added factoids'))
     metrics.append(LineGraph('monthly_deleted_factoids', 'Monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
-    metrics.append(LineGraph('img_by_months', 'Count pictures by months', MetricCategory.FACTOIDS, monowiki_stats.pic_by_months, 'Number of picture by months', 'Number of picture by months'))
-    metrics.append(LineGraph('url_by_months', 'Count url by months', MetricCategory.FACTOIDS, monowiki_stats.url_by_months, 'Number of url by months', 'Number of url by months'))
     metrics.append(LineGraph('monthly_added_factoids_acum', 'Total monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids_acum, "Total monthly number of added factoids to the main namespace of the wiki.", 'Total monthly added factoids'))
     metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids_acum, "Total monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
     
+    #EDIT_CONTENT
+    metrics.append(LineGraph('img_by_months', 'Monthly number of pictures', MetricCategory.EDIT_CONTENT, monowiki_stats.pic_by_months, 'Monthly number of pictures', 'Monthly number of pictures'))
+    metrics.append(LineGraph('url_by_months', 'Monthly number of urls', MetricCategory.EDIT_CONTENT, monowiki_stats.url_by_months, 'Monthly number of urls', 'Monthly number of urls'))
 	
     # DISTRIBUTION
     metrics.append(LineGraph('gini_accum', 'Gini coefficient', MetricCategory.DISTRIBUTION, classic_stats.gini_accum, 'Gini coefficient (accumulated)', 'Gini coefficient'))
