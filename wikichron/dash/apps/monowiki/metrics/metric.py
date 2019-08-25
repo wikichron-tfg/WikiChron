@@ -16,7 +16,7 @@ from enum import Enum, unique
 class MetricCategory(Enum):
     DISTRIBUTION_OF_ACTIVE_REGISTERED_USERS = 'Distribution of active registered users'
     DISTRIBUTION_OF_EDITS_ACROSS_REGISTERED_USERS = 'Distribution of edits across registered users'
-    DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS= 'Distribution of factoid across registered users'
+    DISTRIBUTION_OF_FACTOIDS_ACROSS_REGISTERED_USERS= 'Distribution of factoids across registered users'
     ACTIVE_USER_DISTRIBUTION = 'Active user distribution'
     DISTRIBUTION_OF_EDITS = 'Edits distribution'
     PAGES = 'Pages'
