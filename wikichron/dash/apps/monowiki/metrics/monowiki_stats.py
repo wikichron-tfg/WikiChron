@@ -1070,29 +1070,27 @@ def edit_distributions_across_editors(data, index):
     """
     users_registered = filter_anonymous(data)
     mothly = users_registered.groupby([pd.Grouper(key ='timestamp', freq='MS'),'contributor_id']).size()
-    max_contributions = max(mothly)
     mothly = mothly.to_frame('num_contributions').reset_index()
+    mothly.loc[mothly['num_contributions'] > 100, 'num_contributions'] = 100
     mothly = mothly.groupby([pd.Grouper(key ='timestamp', freq='MS'),'num_contributions']).size().to_frame('num_editors').reset_index()
-    max_persons = max(mothly['num_editors'])
-    round_max = round((max_contributions+5), -1)
-    list_range = list(range(0, round_max+1, 10))
+    list_range = list(range(0, 111, 10))
     max_range = max(list_range)
-    mothly['range'] = pd.cut(mothly['num_contributions'], bins = list_range).astype(str)
-    months_range = mothly.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    graphs_list = [[0 for j in range(max_range+1)] for i in range(len(index))]
+    mothly['range'] = pd.cut(mothly['num_contributions'], bins = list_range, right = False).astype(str)
+    months_range = mothly.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range'])['num_editors'].sum()
+    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
     for i, v in months_range.iteritems(): 
-        i = list(i)#lsita con timestamp y bins
+        i = list(i)#lista con timestamp y bins
         current = i[0]#fecha
         p = i[1]# untervalo
-        p = p.split(']')[0]
-        p = p.split('(')[1]
+        p = p.split(')')[0]
+        p = p.split('[')[1]
         p = p.split(',')
         num_min = int(float(p[0]))
         num_max = int(float(p[1]))
-        num_min = (num_min+1)
-        num_max = (num_max)
+        num_min = (num_min)
+        num_max = (num_max-1)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
         if (resta > 31 and before != pd.to_datetime(0)):
@@ -1104,7 +1102,7 @@ def edit_distributions_across_editors(data, index):
             before = current
         graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
     wiki_by_metrics = np.transpose(graphs_list);
-    return [index,list(range(max_contributions)), wiki_by_metrics, 'Number of editors']
+    return [index,list(range(0, 109)), wiki_by_metrics, 'Number of editors']
 
 def bytes_difference_across_articles(data, index):
     data.set_index(data['timestamp'], inplace=True)
