@@ -154,7 +154,7 @@ def add_x_months(data, months):
 '''def displace_x_months_per_user(data, months):
     return data.shift(months)'''
 
-def current_streak_x_or_y_months_in_a_row(mothly, index, z, y, edits):
+def current_streak_x_or_y_months_in_a_row(mothly, index, z, y, type):
     mothly['add_months'] = add_x_months(mothly, z)
     lista = ['contributor_id']
     lista.append('add_months')
@@ -173,10 +173,12 @@ def current_streak_x_or_y_months_in_a_row(mothly, index, z, y, edits):
     elif z == 6:
       current_streak = mothly[mothly['displace'] == mothly['timestamp']]
 	 
-    if edits == 0:
+    if type == 'users':
       series = current_streak.groupby(pd.Grouper(key = 'timestamp', freq = 'MS')).size()
-    elif edits == 1:
+    elif type == 'edits':
       series = current_streak.groupby(pd.Grouper(key = 'timestamp', freq = 'MS'))['size'].sum()
+    elif type == 'factoids':
+      series = current_streak.groupby(['timestamp'])['number_of_factoids'].sum()
 
     if index is not None:
         series = series.reindex(index, fill_value=0)
