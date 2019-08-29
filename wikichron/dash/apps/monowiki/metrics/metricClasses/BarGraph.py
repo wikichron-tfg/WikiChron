@@ -32,7 +32,9 @@ class BarGraph(Metric):
         self.ordered = metric_data.pop(-1)
         self.data = metric_data
 
-
+    def get_data(self):
+        return self.data
+		
     def get_index(self):
         return self.data[0].index
 
