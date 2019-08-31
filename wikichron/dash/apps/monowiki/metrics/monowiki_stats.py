@@ -1313,7 +1313,7 @@ def contributor_pctg_per_contributions_pctg(data, index):
     category_99 = category_99.set_index(category_99['timestamp']).reindex(index).fillna(0)['count_acum']
     category_99 = ((category_99 / monthly_total_users)*100).fillna(0)
 	
-    category_rest = (format_data[(format_data['edits%accum'] > 99)]).groupby('timestamp').head(1)
+    category_rest = (format_data[(format_data['edits%accum'] == 100)]).groupby('timestamp').head(1)
     category_rest = category_rest.set_index(category_rest['timestamp']).reindex(index).fillna(0)['count_acum']
     category_rest = ((category_rest / monthly_total_users)*100).fillna(0)
 
@@ -1335,7 +1335,7 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
     format_data = format_data.sort_values(['timestamp', 'edits%'], ascending=[True, False])
     format_data['edits%accum'] = format_data.groupby('timestamp')['edits%'].cumsum()
     monthly_total_users = format_data.groupby('timestamp').size().reindex(index).fillna(0)
-
+	
     p = [1 for j in range(1, len(format_data.index)+1)]
     format_data['count'] = p
     format_data['count_acum'] = format_data.groupby('timestamp')['count'].cumsum()
@@ -1355,8 +1355,8 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
     category_99 = (format_data[(format_data['edits%accum'] >=99)]).groupby('timestamp').head(1)
     category_99 = category_99.set_index(category_99['timestamp']).reindex(index).fillna(0)['count_acum']
     category_99 = ((category_99 / monthly_total_users)*100).fillna(0)
-	
-    category_rest = (format_data[(format_data['edits%accum'] > 99)]).groupby('timestamp').head(1)
+
+    category_rest = (format_data[(format_data['edits%accum'] == 100)]).groupby('timestamp').head(1)
     category_rest = category_rest.set_index(category_rest['timestamp']).reindex(index).fillna(0)['count_acum']
     category_rest = ((category_rest / monthly_total_users)*100).fillna(0)
 

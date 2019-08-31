@@ -161,7 +161,7 @@
 	},
 	{
 		"url": "https://200movies.fandom.com",
-		"data": "200movies.fandom.com.csv",
+		"data": "movies.fandom.com.csv",
 		"name": "200Movies Wiki",
 		"articles": 95,
 		"pages": 329,
