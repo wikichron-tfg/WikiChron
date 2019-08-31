@@ -752,13 +752,15 @@ def number_of_edits_by_last_edit_abs(data, index):
 
 ############################ Factoids by Active editors by experience #########################################
 def url_by_months(data,index):
-    data = filter_anonymous(data)
-    data['edit_content'] = data['edit_content'].apply(str)
-    data['count'] = data['edit_content'].apply(lambda x:x.count('[['))
-    series = data.groupby(pd.Grouper(key ='timestamp', freq='MS'))['count'].sum()
-    if index is not None:
-       series= series.reindex(index, fill_value=0)
-    return series
+        data = filter_anonymous(data)
+        data['edit_content']=data['edit_content'].apply(str)
+        data['countI']=data['edit_content'].apply(lambda x:x.count('[['))
+        data['countE']=data['edit_content'].apply(lambda x:x.count('[http'))
+        data['countTotal']=data['countI'] + data['countE']
+        series = data.groupby(pd.Grouper(key ='timestamp', freq='MS'))['countTotal'].sum()
+        if index is not None:
+            series= series.reindex(index, fill_value=0)
+        return series
 
 def pic_by_months(data, index):
     data = filter_anonymous(data)
