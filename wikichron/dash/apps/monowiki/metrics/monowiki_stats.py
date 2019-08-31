@@ -772,7 +772,17 @@ def pic_by_months(data, index):
     if index is not None:
         series= series.reindex(index, fill_value=0)
     return series
-
+def difference_btw_external_and_internal_links(data,index):
+        data = filter_anonymous(data)
+        data['edit_content']=data['edit_content'].apply(str)
+        dataExternal=data
+        data['countI']=data['edit_content'].apply(lambda x:x.count('[['))
+        dataExternal['countE']=data['edit_content'].apply(lambda x:x.count('[http'))
+        internalBar=data.groupby(pd.Grouper(key ='timestamp', freq='MS'))['countI'].sum()
+        externalBar = dataExternal.groupby(pd.Grouper(key ='timestamp', freq='MS'))['countE'].sum()
+        internalBar.name='Internal link'
+        externalBar.name='External link'
+        return[internalBar, externalBar,1]
 def added_factoids_by_active_editors_by_experience(data, index):
     '''
     Get the number of factoids added by users that belong to each category, in the Active editors by experience metric.

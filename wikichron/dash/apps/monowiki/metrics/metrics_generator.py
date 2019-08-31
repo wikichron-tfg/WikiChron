@@ -80,7 +80,7 @@ def generate_classic_metrics():
     #EDIT_CONTENT
     metrics.append(LineGraph('img_by_months', 'Monthly number of pictures', MetricCategory.EDIT_CONTENT, monowiki_stats.pic_by_months, 'Monthly number of pictures', 'Monthly number of pictures'))
     metrics.append(LineGraph('url_by_months', 'Monthly number of urls', MetricCategory.EDIT_CONTENT, monowiki_stats.url_by_months, 'Monthly number of urls', 'Monthly number of urls'))
-	
+    metrics.append(BarGraph('difference_btw_external_and_internal_links', 'Difference between external and internal url', MetricCategory.EDIT_CONTENT, monowiki_stats.difference_btw_external_and_internal_links, 'Difference between external and internal url', 'Difference between external and internal url'))
     # DISTRIBUTION
     metrics.append(LineGraph('gini_accum', 'Gini coefficient', MetricCategory.DISTRIBUTION, classic_stats.gini_accum, 'Gini coefficient (accumulated)', 'Gini coefficient'))
     metrics.append(LineGraph('ratio_10_90', '10:90 ratio', MetricCategory.DISTRIBUTION, classic_stats.ratio_10_90, 'Contributions of the top ten percent more active users between the 90% percent less active', '10:90 ratio'))
