@@ -320,10 +320,10 @@ def current_streak(data, index):
 
     mothly = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('size').reset_index()
 
-    this_month = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 0, 0)
-    two_three_months = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 3, 0)
-    four_six_months = current_streak_x_or_y_months_in_a_row(mothly, index, 3, 6, 0)
-    more_six = current_streak_x_or_y_months_in_a_row(mothly, index, 6, 0, 0)
+    this_month = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 0, 'users')
+    two_three_months = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 3, 'users')
+    four_six_months = current_streak_x_or_y_months_in_a_row(mothly, index, 3, 6, 'users')
+    more_six = current_streak_x_or_y_months_in_a_row(mothly, index, 6, 0, 'users')
 	
     set_category_name([this_month, two_three_months, four_six_months, more_six], ['1 month editing', 'Btw. 2 and 3 consecutive months', 'Btw. 4 and 6 consecutive months', 'More than 6 consecutive months'])
     
@@ -338,10 +338,10 @@ def edits_by_current_streak(data, index):
 
     mothly = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('size').reset_index()
 	
-    this_month = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 0, 1)
-    two_three_months = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 3, 1)
-    four_six_months = current_streak_x_or_y_months_in_a_row(mothly, index, 3, 6, 1)
-    more_six = current_streak_x_or_y_months_in_a_row(mothly, index, 6, 0, 1)
+    this_month = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 0, 'edits')
+    two_three_months = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 3, 'edits')
+    four_six_months = current_streak_x_or_y_months_in_a_row(mothly, index, 3, 6, 'edits')
+    more_six = current_streak_x_or_y_months_in_a_row(mothly, index, 6, 0, 'edits')
 	
     set_category_name([this_month, two_three_months, four_six_months, more_six], ['1 month editing', 'Btw. 2 and 3 consecutive months', 'Btw. 4 and 6 consecutive months', 'More than 6 consecutive months'])
     
