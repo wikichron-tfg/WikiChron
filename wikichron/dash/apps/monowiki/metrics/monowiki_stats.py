@@ -555,12 +555,23 @@ def users_usertalk_page(data,index):
     '''
     return filter_users_pageNS(data, index, 3)
 
-def users_other_page(data,index):
+def users_file_page(data, index):
+    return filter_users_pageNS(data, index, 6)
+
+def users_mediaWiki_page(data, index):
+    return filter_users_pageNS(data, index, 8)
+
+def users_category_page(data, index):
+    return filter_users_pageNS(data, index, 14)
+
+def users_other_page(data,index,dif):
     '''
     Monthly number of users that have edited the rest of relevant namespaces in the wiki
     '''
-    category_list = [-2, -1, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 110, 111]
-
+    if dif == 0:
+        category_list = [-2, -1, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 110, 111]
+    else:
+        category_list = [-2, -1, 4, 5, 7, 9, 11, 12, 13, 15, 110, 111]
     aux = pd.DataFrame()
     aux['timestamp'] = index
 
@@ -568,7 +579,6 @@ def users_other_page(data,index):
         serie = filter_users_pageNS(data, index, category_list[i])
         serie = pd.DataFrame(serie).reset_index()
         aux['page_ns_' + str(category_list[i])] = serie['contributor_id']
-
     aux['final_result'] = aux.sum(axis=1)
     series = pd.Series(index=aux['timestamp'], data=aux['final_result'].values)
     return series
@@ -584,11 +594,26 @@ def users_in_namespaces(data, index):
     user_page = users_user_page(data, index)
     template_page = users_template_page(data, index)
     usertalk_page = users_usertalk_page(data,index)
-    other_page = users_other_page(data,index)
+    other_page = users_other_page(data,index,0)
 
     set_category_name([main_page, articletalk_page, user_page, template_page, usertalk_page, other_page], ['Article pages', 'Article talk pages', 'User pages', 'Template pages', 'User talk pages', 'Other pages'])
 
     return [main_page, articletalk_page, user_page, usertalk_page, template_page, other_page, 0]
+	
+def users_in_namespaces_extends(data, index):
+    '''
+    Get the monthly number of users that belong to each category in the Active editors in namespaces metric
+    '''
+    data = filter_anonymous(data)
+
+    file = users_file_page(data, index)
+    mediaWiki = users_mediaWiki_page(data, index)
+    category = users_category_page(data, index)
+    other_page = users_other_page(data,index,1)
+
+    set_category_name([file,mediaWiki,category,other_page], ['File pages', 'Media wiki pages', 'Category pages','Other pages'])
+
+    return [file, mediaWiki, category, other_page, 0]
 
 ############################ Edits by editor experience (absolute and relative) #########################################
 
