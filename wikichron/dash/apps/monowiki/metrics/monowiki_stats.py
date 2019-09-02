@@ -347,6 +347,10 @@ def edits_by_current_streak(data, index):
     
     return [this_month, two_three_months, four_six_months, more_six, 1]
 
+def edits_by_current_streak_only_mains(data, index):
+    data = data[data['page_ns']==0]
+    return edits_by_current_streak(data, index)
+
 def edition_on_type_pages(data, index):
     data=filter_anonymous(data)
     articles=edition_concrete(data, index, 0)
