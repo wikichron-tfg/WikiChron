@@ -437,6 +437,7 @@ def users_last_edit(data, index):
     format_data['months'] = format_data.groupby('contributor_id')['timestamp'].diff().div(pd.Timedelta(days=30.44), fill_value=0).round().astype(int)
 
     new_users = users_new(data, index)
+    print(new_users)
     one_month = pd.Series((format_data[format_data['months'] == 1]).groupby(['timestamp']).size(), index).fillna(0)
     two_three_months = pd.Series((format_data[(format_data['months'] == 2) | (format_data['months'] == 3)]).groupby(['timestamp']).size(), index).fillna(0)
     four_six_months = pd.Series((format_data[(format_data['months'] >= 4) & (format_data['months'] <= 6)]).groupby(['timestamp']).size(), index).fillna(0)
