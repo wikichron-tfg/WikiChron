@@ -1155,32 +1155,38 @@ def bytes_difference_across_articles(data, index):
     group = group_by_page_id['bytes'].shift()
     order['bytes1'] = group
     order['dif'] = order['bytes'] - order['bytes1']
-    order['dif'] = order['dif'].fillna(order['bytes'])
-    order['dif'] = order['dif'].apply(lambda x: int(x))
+    order['dif'] = order['dif'].fillna(order['bytes']).astype(int)
+    order.loc[order['dif'] > 1000, 'dif'] = 1000
+    order.loc[order['dif'] < -1000, 'dif'] = -1000
+    #order['dif'] = order['dif'].apply(lambda x: int(x))
     #print(order[['bytes', 'bytes1', 'dif']])
     #order = order.reset_index()
-    max_dif_bytes = int(max(order['dif']))
-    min_dif_bytes = int(min(order['dif'])-1)
-    round_max = (max_dif_bytes+100)
-    list_range = list(range(min_dif_bytes, round_max, 100))
+    #max_dif_bytes = int(max(order['dif']))
+    #min_dif_bytes = int(min(order['dif'])-1)
+    #round_max = (max_dif_bytes+100)
+    list_range = list(range(-1100, 1101, 100))
+    min_range = min(list_range)
     max_range = max(list_range)
-    order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
+    order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
+    #list_range = list(range(min_dif_bytes, round_max, 100))
+
+    #order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
     months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    min_dif_bytes_a = abs(min_dif_bytes+1)
-    max_range = max_range + min_dif_bytes_a
-    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
+    #min_dif_bytes_a = abs(min_dif_bytes+1)
+    #max_range = max_range + min_dif_bytes_a
+    graphs_list = [[0 for j in range(min_range, max_range)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
     for i, v in months_range.iteritems(): 
         i = list(i)#lsita con timestamp y bins
         current = i[0]#fecha
         p = i[1]# untervalo
-        p = p.split(']')[0]
-        p = p.split('(')[1]
+        p = p.split(')')[0]
+        p = p.split('[')[1]
         p = p.split(',')
         num_min = int(float(p[0]))
         num_max = int(float(p[1]))
-        num_min = (num_min+1)
+        num_min = (num_min)
         num_max = (num_max)
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
@@ -1191,9 +1197,9 @@ def bytes_difference_across_articles(data, index):
         if (before != current):
             j = j +1
             before = current
-        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
-    wiki_by_metrics = np.transpose(graphs_list);
-    return [index, list(range(min_dif_bytes, max_dif_bytes)), wiki_by_metrics, 'Number of articles']
+        graphs_list[j][num_min:num_max] = [v for i in range(num_min,num_max)]
+    wiki_by_metrics = np.transpose(graphs_list)
+    return [index, list(range(-1100, 1099)), wiki_by_metrics, 'Number of articles']
 
 def edition_on_pages(data, index):
     users_registered = filter_anonymous(data)
