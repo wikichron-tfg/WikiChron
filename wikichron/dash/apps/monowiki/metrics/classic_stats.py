@@ -344,7 +344,6 @@ def surviving_new_editors(data, index):
 ########################################################################
 
 # Factoid Metrics
-
 def monthly_deleted_factoids(data, index):
     data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]

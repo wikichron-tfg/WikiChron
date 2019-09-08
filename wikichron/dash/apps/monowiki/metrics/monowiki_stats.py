@@ -317,7 +317,7 @@ def users_reincident(data, index):
 
 def current_streak(data, index):
     data = filter_anonymous(data)
-
+    #data = data[data['page_ns'] == 0]
     mothly = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('size').reset_index()
 
     this_month = current_streak_x_or_y_months_in_a_row(mothly, index, 1, 0, 'users')
@@ -386,6 +386,7 @@ def users_first_edit(data, index):
     '''Calculate the monthly number of users whose first edit was between 1 and 3, 4 and 6, 6 and 12, and more than 12 months ago
     '''
     data = filter_anonymous(data)
+    #data = data[data['page_ns'] == 0]
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     
     mins = format_data.groupby('contributor_id')['timestamp'].transform('min')
@@ -437,6 +438,7 @@ def users_last_edit(data, index):
     Get the monthly number of users whose last edit was less than 1, between 2 and 3, 4 and 6, and more than 6 months ago
     '''
     data = filter_anonymous(data)
+    #data = data[data['page_ns'] == 0]
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['months'] = format_data.groupby('contributor_id')['timestamp'].diff().div(pd.Timedelta(days=30.44), fill_value=0).round().astype(int)
 
@@ -452,7 +454,7 @@ def users_last_edit(data, index):
     four_six_months.name = 'Btw. 4 and 6 months ago'
     more_six_months.name = 'More than six months ago'
 
-    return [new_users, one_month, two_three_months, four_six_months, more_six_months, 1]
+    return [new_users, more_six_months, four_six_months, two_three_months, one_month, 1]
 
 def users_last_edit_abs(data, index):
     '''
@@ -476,7 +478,7 @@ def users_last_edit_abs(data, index):
     four_six_months.name = 'Btw. 4 and 6 months ago'
     more_six_months.name = 'More than six months ago'
 
-    return [new_users, one_month, two_three_months, four_six_months, more_six_months, 1]
+    return [new_users, more_six_months, four_six_months, two_three_months, one_month, 1]
 
 ############################ Active editors by experience #####################################################################
 
@@ -485,6 +487,7 @@ def users_number_of_edits(data, index):
     Get the monthly number of users that belong to each category, in the Active editors by experience metric.
     '''
     data = filter_anonymous(data)
+    #data = data[data['page_ns'] == 0]
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['nEdits'] = (format_data[['medits', 'contributor_id']].groupby(['contributor_id']))['medits'].cumsum()
     format_data['nEdits_until_previous_month'] = (format_data[['nEdits','contributor_id']].groupby(['contributor_id']))['nEdits'].shift().fillna(-1)
@@ -608,13 +611,7 @@ def users_in_namespaces_extends(data, index):
     '''
     Get the monthly number of users that belong to each category in the Active editors in namespaces metric
     '''
-    data = filter_anonymous(data)
-
-    file = users_file_page(data, index)
-    mediaWiki = users_mediaWiki_page(data, index)
-    category = users_category_page(data, index)
-    other_page = users_other_page(data,index,1)
-
+    
     set_category_name([file,mediaWiki,category,other_page], ['File pages', 'Media wiki pages', 'Category pages','Other pages'])
 
     return [file, mediaWiki, category, other_page, 0]
@@ -754,7 +751,7 @@ def number_of_edits_by_last_edit(data, index):
     four_six_months.name = 'Btw. 4 and 6 months ago'
     more_six_months.name = 'More than six months ago'
 
-    return [new_users, one_month, two_three_months, four_six_months, more_six_months, 1]
+    return [new_users, more_six_months, four_six_months, two_three_months, one_month, 1]
 
 def number_of_edits_by_last_edit_abs(data, index):
     '''
@@ -777,9 +774,10 @@ def number_of_edits_by_last_edit_abs(data, index):
     four_six_months.name = 'Btw. 4 and 6 months ago'
     more_six_months.name = 'More than six months ago'
 
-    return [new_users, one_month, two_three_months, four_six_months, more_six_months, 1]
+    return [new_users, more_six_months, four_six_months, two_three_months, one_month, 1]
 
-############################ Factoids by Active editors by experience #########################################
+############################ url and pictures #########################################
+
 def url_by_months(data,index):
         data = filter_anonymous(data)
         data['edit_content']=data['edit_content'].apply(str)
@@ -812,13 +810,15 @@ def difference_btw_external_and_internal_links(data,index):
         internalBar.name='Internal link'
         externalBar.name='External link'
         return[internalBar, externalBar,1]
+
+############################ Factoids by Active editors by experience #########################################
+
 def added_factoids_by_active_editors_by_experience(data, index):
     '''
     Get the number of factoids added by users that belong to each category, in the Active editors by experience metric.
     '''
     data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]
-    data['timestamp'] = pd.to_datetime(data['timestamp']).dt.to_period('M').dt.to_timestamp()
     data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
     data['added_factoids'] = data.groupby('page_id').factoids.diff().fillna(data.factoids)
     data['number_added_factoids'] = data['added_factoids'].apply(len)
@@ -1101,44 +1101,6 @@ def deleted_factoids_by_date_of_last_edit(data, index):
 
 
 ############################# HEATMAP METRICS ##############################################
-def generate_zaxis(max_range, index, months_range):
-    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
-    before = pd.to_datetime(0)
-    j = -1
-    for i, v in months_range.iteritems(): 
-        i = list(i)#lsita con timestamp y bins
-        current = i[0]#fecha
-        p = i[1]# untervalo
-        p = p.split(')')[0]
-        p = p.split('[')[1]
-        p = p.split(',')
-        num_min = int(float(p[0]))
-        num_max = int(float(p[1]))
-        resta = current - before
-        resta = int(resta / np.timedelta64(1, 'D'))
-        if (resta > 31 and before != pd.to_datetime(0)):
-            aux= int(resta / 31)
-            j = j + aux
-            resta = resta- (31 * aux)
-        if (before != current):
-            j = j +1
-            before = current
-        graphs_list[j][num_min:num_max] = [v for i in range(num_min,num_max)]
-    wiki_by_metrics = np.transpose(graphs_list)
-    return wiki_by_metrics
-
-def bytes_diference(data):
-    data.set_index(data['timestamp'], inplace=True)
-    users_registered = filter_anonymous(data)
-    mains = users_registered[users_registered['page_ns'] == 0]
-    order = mains.sort_index()
-    group_by_page_id = order[['page_id', 'bytes']].groupby(['page_id'])
-    #order = group_by_page_id.apply(lambda x: (x.bytes-x.bytes.shift()).fillna(x.bytes)).to_frame('dif')
-    group = group_by_page_id['bytes'].shift()
-    order['bytes1'] = group
-    order['dif'] = order['bytes'] - order['bytes1']
-    order['dif'] = order['dif'].fillna(order['bytes']).astype(int)
-    return order
 
 def edit_distributions_across_editors(data, index):
     """
@@ -1156,64 +1118,82 @@ def edit_distributions_across_editors(data, index):
     max_range = max(list_range)
     mothly['range'] = pd.cut(mothly['num_contributions'], bins = list_range, right = False).astype(str)
     months_range = mothly.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range'])['num_editors'].sum()
-    wiki_by_metrics = generate_axis(max_range, index, months_range)
+    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
+    before = pd.to_datetime(0)
+    j = -1
+    for i, v in months_range.iteritems(): 
+        i = list(i)#lista con timestamp y bins
+        current = i[0]#fecha
+        p = i[1]# untervalo
+        p = p.split(')')[0]
+        p = p.split('[')[1]
+        p = p.split(',')
+        num_min = int(float(p[0]))
+        num_max = int(float(p[1]))
+        num_min = (num_min)
+        num_max = (num_max-1)
+        resta = current - before
+        resta = int(resta / np.timedelta64(1, 'D'))
+        if (resta > 31 and before != pd.to_datetime(0)):
+            aux= int(resta / 31)
+            j = j + aux
+            resta = resta- (31 * aux)
+        if (before != current):
+            j = j +1
+            before = current
+        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
+    wiki_by_metrics = np.transpose(graphs_list);
     return [index,list(range(0, 109)), wiki_by_metrics, 'Number of editors']
 
-def bytes_added_across_articles(data, index):
-    order = bytes_diference(data)
-    order = order[order['dif'] >= 0]
-    #order.loc[order['dif'] < 0, 'dif'] = 0
-    #order['dif'] = order['dif'].apply(lambda x: int(x))
+def bytes_difference_across_articles(data, index):
+    data.set_index(data['timestamp'], inplace=True)
+    users_registered = filter_anonymous(data)
+    mains = users_registered[users_registered['page_ns'] == 0]
+    order = mains.sort_index()
+    group_by_page_id = order[['page_id', 'bytes']].groupby(['page_id'])
+    #order = group_by_page_id.apply(lambda x: (x.bytes-x.bytes.shift()).fillna(x.bytes)).to_frame('dif')
+    group = group_by_page_id['bytes'].shift()
+    order['bytes1'] = group
+    order['dif'] = order['bytes'] - order['bytes1']
+    order['dif'] = order['dif'].fillna(order['bytes'])
+    order['dif'] = order['dif'].apply(lambda x: int(x))
     #print(order[['bytes', 'bytes1', 'dif']])
     #order = order.reset_index()
-    max_dif_bytes = max(order['dif'])
-    print(max_dif_bytes)
-    if max_dif_bytes > 1000:
-        order.loc[order['dif'] > 1000, 'dif'] = 1000
-        list_range = list(range(0, 1101, 100))
-    else:
-        list_range = list(range(0, max_dif_bytes+100, 100))
-    #min_dif_bytes = int(min(order['dif'])-1)
-    #round_max = (max_dif_bytes+100)
-    
+    max_dif_bytes = int(max(order['dif']))
+    min_dif_bytes = int(min(order['dif'])-1)
+    round_max = (max_dif_bytes+100)
+    list_range = list(range(min_dif_bytes, round_max, 100))
     max_range = max(list_range)
-    order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
-    #list_range = list(range(min_dif_bytes, round_max, 100))
-
-    #order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
+    order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
     months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    #min_dif_bytes_a = abs(min_dif_bytes+1)
-    #max_range = max_range + min_dif_bytes_a
-    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
-    return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
-	
-def bytes_deleted_across_articles(data, index):
-    order = bytes_diference(data)
-    order = order[order['dif'] < 0]
-    order['dif'] = order['dif'].apply(lambda x: abs(x))
-    #order.loc[order['dif'] < 0, 'dif'] = 0
-    #order['dif'] = order['dif'].apply(lambda x: int(x))
-    #print(order[['bytes', 'bytes1', 'dif']])
-    #order = order.reset_index()
-    max_dif_bytes = max(order['dif'])
-    if max_dif_bytes > 1000:
-        order.loc[order['dif'] > 1000, 'dif'] = 1000
-        list_range = list(range(0, 1101, 100))
-    else:
-        list_range = list(range(0, max_dif_bytes+100, 100))
-    #min_dif_bytes = int(min(order['dif'])-1)
-    #round_max = (max_dif_bytes+100)
-    
-    max_range = max(list_range)
-    order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
-    #list_range = list(range(min_dif_bytes, round_max, 100))
-
-    #order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
-    months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    #min_dif_bytes_a = abs(min_dif_bytes+1)
-    #max_range = max_range + min_dif_bytes_a
-    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
-    return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
+    min_dif_bytes_a = abs(min_dif_bytes+1)
+    max_range = max_range + min_dif_bytes_a
+    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
+    before = pd.to_datetime(0)
+    j = -1
+    for i, v in months_range.iteritems(): 
+        i = list(i)#lsita con timestamp y bins
+        current = i[0]#fecha
+        p = i[1]# untervalo
+        p = p.split(']')[0]
+        p = p.split('(')[1]
+        p = p.split(',')
+        num_min = int(float(p[0]))
+        num_max = int(float(p[1]))
+        num_min = (num_min+1)
+        num_max = (num_max)
+        resta = current - before
+        resta = int(resta / np.timedelta64(1, 'D'))
+        if (resta > 31 and before != pd.to_datetime(0)):
+            aux= int(resta / 31)
+            j = j + aux
+            resta = resta- (31 * aux)
+        if (before != current):
+            j = j +1
+            before = current
+        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
+    wiki_by_metrics = np.transpose(graphs_list);
+    return [index, list(range(min_dif_bytes, max_dif_bytes)), wiki_by_metrics, 'Number of articles']
 
 def edition_on_pages(data, index):
     users_registered = filter_anonymous(data)
