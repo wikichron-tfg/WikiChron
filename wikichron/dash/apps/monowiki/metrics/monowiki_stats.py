@@ -1062,7 +1062,7 @@ def added_factoids_by_date_of_last_edit(data, index):
     four_six_months_factoids.name = 'By users last edit between 4 and 6 months ago'
     more_six_months_factoids.name = 'By users last edit more than 6 months ago'
 
-    return [new_users_factoids, one_month_factoids, two_three_months_factoids, four_six_months_factoids, more_six_months_factoids, 1]
+    return [new_users_factoids, more_six_months_factoids, four_six_months_factoids, two_three_months_factoids, one_month_factoids, 1]
 
 def deleted_factoids_by_date_of_last_edit(data, index):
     '''
@@ -1102,7 +1102,7 @@ def deleted_factoids_by_date_of_last_edit(data, index):
     four_six_months_factoids.name = 'By users last edit between 4 and 6 months ago'
     more_six_months_factoids.name = 'By users last edit more than 6 months ago'
 
-    return [new_users_factoids, one_month_factoids, two_three_months_factoids, four_six_months_factoids, more_six_months_factoids, 1]
+    return [new_users_factoids, more_six_months_factoids, four_six_months_factoids, two_three_months_factoids, one_month_factoids, 1]
 
 
 ############################# HEATMAP METRICS ##############################################
