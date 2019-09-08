@@ -611,7 +611,12 @@ def users_in_namespaces_extends(data, index):
     '''
     Get the monthly number of users that belong to each category in the Active editors in namespaces metric
     '''
-    
+     data = filter_anonymous(data)
+
+    file = users_file_page(data, index)
+    mediaWiki = users_mediaWiki_page(data, index)
+    category = users_category_page(data, index)
+    other_page = users_other_page(data,index,1)
     set_category_name([file,mediaWiki,category,other_page], ['File pages', 'Media wiki pages', 'Category pages','Other pages'])
 
     return [file, mediaWiki, category, other_page, 0]
