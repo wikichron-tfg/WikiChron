@@ -611,7 +611,7 @@ def users_in_namespaces_extends(data, index):
     '''
     Get the monthly number of users that belong to each category in the Active editors in namespaces metric
     '''
-     data = filter_anonymous(data)
+    data = filter_anonymous(data)
 
     file = users_file_page(data, index)
     mediaWiki = users_mediaWiki_page(data, index)
@@ -1106,6 +1106,44 @@ def deleted_factoids_by_date_of_last_edit(data, index):
 
 
 ############################# HEATMAP METRICS ##############################################
+def generate_zaxis(max_range, index, months_range):
+    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
+    before = pd.to_datetime(0)
+    j = -1
+    for i, v in months_range.iteritems(): 
+        i = list(i)#lsita con timestamp y bins
+        current = i[0]#fecha
+        p = i[1]# untervalo
+        p = p.split(')')[0]
+        p = p.split('[')[1]
+        p = p.split(',')
+        num_min = int(float(p[0]))
+        num_max = int(float(p[1]))
+        resta = current - before
+        resta = int(resta / np.timedelta64(1, 'D'))
+        if (resta > 31 and before != pd.to_datetime(0)):
+            aux= int(resta / 31)
+            j = j + aux
+            resta = resta- (31 * aux)
+        if (before != current):
+            j = j +1
+            before = current
+        graphs_list[j][num_min:num_max] = [v for i in range(num_min,num_max)]
+    wiki_by_metrics = np.transpose(graphs_list)
+    return wiki_by_metrics
+
+def bytes_diference(data):
+    data.set_index(data['timestamp'], inplace=True)
+    users_registered = filter_anonymous(data)
+    mains = users_registered[users_registered['page_ns'] == 0]
+    order = mains.sort_index()
+    group_by_page_id = order[['page_id', 'bytes']].groupby(['page_id'])
+    #order = group_by_page_id.apply(lambda x: (x.bytes-x.bytes.shift()).fillna(x.bytes)).to_frame('dif')
+    group = group_by_page_id['bytes'].shift()
+    order['bytes1'] = group
+    order['dif'] = order['bytes'] - order['bytes1']
+    order['dif'] = order['dif'].fillna(order['bytes']).astype(int)
+    return order
 
 def edit_distributions_across_editors(data, index):
     """
@@ -1123,82 +1161,65 @@ def edit_distributions_across_editors(data, index):
     max_range = max(list_range)
     mothly['range'] = pd.cut(mothly['num_contributions'], bins = list_range, right = False).astype(str)
     months_range = mothly.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range'])['num_editors'].sum()
-    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
-    before = pd.to_datetime(0)
-    j = -1
-    for i, v in months_range.iteritems(): 
-        i = list(i)#lista con timestamp y bins
-        current = i[0]#fecha
-        p = i[1]# untervalo
-        p = p.split(')')[0]
-        p = p.split('[')[1]
-        p = p.split(',')
-        num_min = int(float(p[0]))
-        num_max = int(float(p[1]))
-        num_min = (num_min)
-        num_max = (num_max-1)
-        resta = current - before
-        resta = int(resta / np.timedelta64(1, 'D'))
-        if (resta > 31 and before != pd.to_datetime(0)):
-            aux= int(resta / 31)
-            j = j + aux
-            resta = resta- (31 * aux)
-        if (before != current):
-            j = j +1
-            before = current
-        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
-    wiki_by_metrics = np.transpose(graphs_list);
+    wiki_by_metrics = generate_axis(max_range, index, months_range)
     return [index,list(range(0, 109)), wiki_by_metrics, 'Number of editors']
 
-def bytes_difference_across_articles(data, index):
-    data.set_index(data['timestamp'], inplace=True)
-    users_registered = filter_anonymous(data)
-    mains = users_registered[users_registered['page_ns'] == 0]
-    order = mains.sort_index()
-    group_by_page_id = order[['page_id', 'bytes']].groupby(['page_id'])
-    #order = group_by_page_id.apply(lambda x: (x.bytes-x.bytes.shift()).fillna(x.bytes)).to_frame('dif')
-    group = group_by_page_id['bytes'].shift()
-    order['bytes1'] = group
-    order['dif'] = order['bytes'] - order['bytes1']
-    order['dif'] = order['dif'].fillna(order['bytes'])
-    order['dif'] = order['dif'].apply(lambda x: int(x))
+def bytes_added_across_articles(data, index):
+    order = bytes_diference(data)
+    order = order[order['dif'] >= 0]
+    #order.loc[order['dif'] < 0, 'dif'] = 0
+    #order['dif'] = order['dif'].apply(lambda x: int(x))
     #print(order[['bytes', 'bytes1', 'dif']])
     #order = order.reset_index()
-    max_dif_bytes = int(max(order['dif']))
-    min_dif_bytes = int(min(order['dif'])-1)
-    round_max = (max_dif_bytes+100)
-    list_range = list(range(min_dif_bytes, round_max, 100))
+    max_dif_bytes = max(order['dif'])
+    if max_dif_bytes > 1000:
+        order.loc[order['dif'] > 1000, 'dif'] = 1000
+        list_range = list(range(0, 1101, 100))
+    else:
+        list_range = list(range(0, max_dif_bytes+100, 100))
+    #min_dif_bytes = int(min(order['dif'])-1)
+    #round_max = (max_dif_bytes+100)
+    
     max_range = max(list_range)
-    order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
+    order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
+    #list_range = list(range(min_dif_bytes, round_max, 100))
+
+    #order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
     months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    min_dif_bytes_a = abs(min_dif_bytes+1)
-    max_range = max_range + min_dif_bytes_a
-    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
-    before = pd.to_datetime(0)
-    j = -1
-    for i, v in months_range.iteritems(): 
-        i = list(i)#lsita con timestamp y bins
-        current = i[0]#fecha
-        p = i[1]# untervalo
-        p = p.split(']')[0]
-        p = p.split('(')[1]
-        p = p.split(',')
-        num_min = int(float(p[0]))
-        num_max = int(float(p[1]))
-        num_min = (num_min+1)
-        num_max = (num_max)
-        resta = current - before
-        resta = int(resta / np.timedelta64(1, 'D'))
-        if (resta > 31 and before != pd.to_datetime(0)):
-            aux= int(resta / 31)
-            j = j + aux
-            resta = resta- (31 * aux)
-        if (before != current):
-            j = j +1
-            before = current
-        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
-    wiki_by_metrics = np.transpose(graphs_list);
-    return [index, list(range(min_dif_bytes, max_dif_bytes)), wiki_by_metrics, 'Number of articles']
+    #min_dif_bytes_a = abs(min_dif_bytes+1)
+    #max_range = max_range + min_dif_bytes_a
+    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
+    return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
+	
+def bytes_deleted_across_articles(data, index):
+    order = bytes_diference(data)
+    order = order[order['dif'] < 0]
+    order['dif'] = order['dif'].apply(lambda x: abs(x))
+    #order.loc[order['dif'] < 0, 'dif'] = 0
+    #order['dif'] = order['dif'].apply(lambda x: int(x))
+    #print(order[['bytes', 'bytes1', 'dif']])
+    #order = order.reset_index()
+    max_dif_bytes = max(order['dif'])
+    if max_dif_bytes > 1000:
+        order.loc[order['dif'] > 1000, 'dif'] = 1000
+        list_range = list(range(0, 1101, 100))
+    else:
+        list_range = list(range(0, max_dif_bytes+100, 100))
+    #min_dif_bytes = int(min(order['dif'])-1)
+    #round_max = (max_dif_bytes+100)
+    
+    max_range = max(list_range)
+    order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
+    #list_range = list(range(min_dif_bytes, round_max, 100))
+
+    #order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
+    months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
+    #min_dif_bytes_a = abs(min_dif_bytes+1)
+    #max_range = max_range + min_dif_bytes_a
+    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
+    return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
+
+
 
 def edition_on_pages(data, index):
     users_registered = filter_anonymous(data)
