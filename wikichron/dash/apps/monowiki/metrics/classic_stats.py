@@ -344,6 +344,17 @@ def surviving_new_editors(data, index):
 ########################################################################
 
 # Factoid Metrics
+def monthly_factoids(data, index):
+    data = filter_anonymous(data)
+    data = data[data['page_ns'] == 0]
+
+    data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
+    data['num_factoids'] = data['factoids'].apply(len)
+    return (data.groupby(pd.Grouper(key='timestamp', freq='MS'))['num_factoids'].sum())
+
+def total_factoids(data, index):
+    return (monthly_factoids(data, index)).cumsum()
+    
 def monthly_deleted_factoids(data, index):
     data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]

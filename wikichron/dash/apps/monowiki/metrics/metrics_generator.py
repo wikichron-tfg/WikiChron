@@ -72,10 +72,12 @@ def generate_classic_metrics():
     metrics.append(LineGraph('surviving_new_editors', 'Surviving new editors', MetricCategory.RETENTION, classic_stats.surviving_new_editors, "Numer of new users who completes at least one edit within the first 30 days since registration and also completes another edit in the survival period, (i.e. the following 30 days). Based on a WMF's metric.", 'Surviving new editors',))
 
     # FACTOIDS
-    metrics.append(LineGraph('monthly_added_factoids', 'Monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids, "Monthly number of added factoids to the main namespace of the wiki.", 'Monthly added factoids'))
-    metrics.append(LineGraph('monthly_deleted_factoids', 'Monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
-    metrics.append(LineGraph('monthly_added_factoids_acum', 'Total monthly added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids_acum, "Total monthly number of added factoids to the main namespace of the wiki.", 'Total monthly added factoids'))
-    metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total monthly deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids_acum, "Total monthly number of deleted factoids to the main namespace of the wiki.", 'Monthly deleted factoids'))
+    metrics.append(LineGraph('monthly_added_factoids', 'Added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids, "Number of added factoids in articles.", 'Added factoids'))
+    metrics.append(LineGraph('monthly_deleted_factoids', 'Deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Number of deleted factoids in articles.", 'Deleted factoids'))
+    metrics.append(LineGraph('monthly_added_factoids_acum', 'Total added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids_acum, "Total number of added factoids in articles.", 'Total added factoids'))
+    metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids_acum, "Total number of deleted factoids in articles.", 'Total deleted factoids'))
+    metrics.append(LineGraph('monthly_factoids', 'Number of factoids', MetricCategory.FACTOIDS, classic_stats.monthly_factoids, "Number of factoids in articles", 'Factoids'))
+    metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total number of factoids', MetricCategory.FACTOIDS, classic_stats.total_factoids, "Total number of factoids in articles", 'Total factoids'))
     
     #EDIT_CONTENT
     metrics.append(LineGraph('img_by_months', 'Monthly number of pictures', MetricCategory.EDIT_CONTENT, monowiki_stats.pic_by_months, 'Monthly number of pictures', 'Monthly number of pictures'))
