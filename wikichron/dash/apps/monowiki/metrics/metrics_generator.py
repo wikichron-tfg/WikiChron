@@ -80,9 +80,9 @@ def generate_classic_metrics():
     metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total number of factoids', MetricCategory.FACTOIDS, classic_stats.total_factoids, "Total number of factoids in articles", 'Total factoids'))
     
     #EDIT_CONTENT
-    metrics.append(LineGraph('img_by_months', 'Monthly number of pictures', MetricCategory.EDIT_CONTENT, monowiki_stats.pic_by_months, 'Monthly number of pictures', 'Monthly number of pictures'))
-    metrics.append(LineGraph('url_by_months', 'Monthly number of urls', MetricCategory.EDIT_CONTENT, monowiki_stats.url_by_months, 'Monthly number of urls', 'Monthly number of urls'))
-    metrics.append(BarGraph('difference_btw_external_and_internal_links', 'Difference between external and internal url', MetricCategory.EDIT_CONTENT, monowiki_stats.difference_btw_external_and_internal_links, 'Difference between external and internal url', 'Difference between external and internal url'))
+    metrics.append(LineGraph('img_by_months', 'Number of pictures', MetricCategory.EDIT_CONTENT, monowiki_stats.pic_by_months, 'Number of pictures', 'Number of pictures'))
+    metrics.append(LineGraph('url_by_months', 'Number of urls', MetricCategory.EDIT_CONTENT, monowiki_stats.url_by_months, 'Number of urls', 'Number of urls'))
+    metrics.append(BarGraph('difference_btw_external_and_internal_links', 'Difference between external and internal urls', MetricCategory.EDIT_CONTENT, monowiki_stats.difference_btw_external_and_internal_links, 'Difference between external and internal urls', 'Difference between external and internal urls'))
     # DISTRIBUTION
     metrics.append(LineGraph('gini_accum', 'Gini coefficient', MetricCategory.DISTRIBUTION, classic_stats.gini_accum, 'Gini coefficient (accumulated)', 'Gini coefficient'))
     metrics.append(LineGraph('ratio_10_90', '10:90 ratio', MetricCategory.DISTRIBUTION, classic_stats.ratio_10_90, 'Contributions of the top ten percent more active users between the 90% percent less active', '10:90 ratio'))
@@ -140,7 +140,7 @@ def generate_monowiki_metrics():
     # heatmap metrics
     metrics.append(HeatMap('bytes_added_across_articles', 'Bytes added across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_added_across_articles, 'Number of articles (z axis) than added these bytes (y axis).', 'Bytes added across articles', ))
     metrics.append(HeatMap('bytes_deleted_across_articles', 'Bytes deleted across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_deleted_across_articles, 'Number of articles (z axis) than deleted these bytes (y axis).', 'Bytes deleted across articles', ))
-    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Monthly distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, 'Monthly distribution of editors across articles', 'Monthly distribution of editors across articles'))
+    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, 'Distribution of editors across articles', 'Distribution of editors across articles'))
     metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edition_on_pages, '', 'Edits on pages'))
     metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.revision_on_pages, '', 'Revisions on pages'))
 

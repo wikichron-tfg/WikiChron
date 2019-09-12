@@ -17,17 +17,13 @@ import datetime as d
 from dateutil.relativedelta import relativedelta
 import time
 
+
+###### General helper functions ######
+
 def calculate_index_all_months(data):
     monthly_data = data.groupby(pd.Grouper(key='timestamp', freq='MS'))
     index = monthly_data.size().index
     return index
-
-
-
-# Users
-
-
-###### General helper functions ######
 
 def set_category_name(list_of_series, list_of_names):
     '''
@@ -259,8 +255,10 @@ def generate_condition_users_by_number_of_edits(data, x, y):
 
 #### Helper metrics 9 and 10 ####
 
-# this helper function gets the number of users that have edited a particular kind of page, specified by the parameter page_ns
 def filter_users_pageNS(data, index, page_ns):
+    '''
+    helper function which gets the number of users that have edited a particular kind of page, specified by the parameter page_ns
+    '''
     data = filter_anonymous(data)
     edits_page = data[data['page_ns'] == page_ns]
     series = edits_page.groupby(pd.Grouper(key = 'timestamp', freq = 'MS'))['contributor_id'].nunique()
@@ -292,21 +290,15 @@ def users_new(data, index):
         series = series.reindex(index, fill_value=0)
     return series
 
-#users who make their second edition in the wiki (we want the count for this kind of users per month)
 def users_reincident(data, index):
     data['test_duplicated'] = data['contributor_id'].duplicated()
     data = data[data['contributor_name'] != 'Anonymous']
     users_reincident = data[data['test_duplicated'] == True]
-#determine in which month each user performed their second edition-> can be the same month as the first one
-#1) get number of editions per month for every user
     users_reincident = users_reincident.groupby(['contributor_id', pd.Grouper(key='timestamp', freq='MS')]).size().to_frame('edits_count').reset_index()
-#2) get the accum. number of edits per user each month
     users_reincident['accum_edit_count'] = users_reincident.groupby('contributor_id')['edits_count'].transform(lambda x: x.cumsum())
-#3) drop rows in which the accum_edit_count is less than 2
     users_reincident = users_reincident[users_reincident['accum_edit_count'] > 1]
-#4) now, we just want the first month in which the user became reincident: (drop_duplicates drops all rows but first, so as it is sorted, for sure we will keep the first month)
     users_reincident = users_reincident.drop_duplicates('contributor_id')
-#5) group by timestamp and get the count of reincident users per month
+
     series = users_reincident.groupby(pd.Grouper(key='timestamp', freq='MS')).size()
     if index is not None:
         series = series.reindex(index, fill_value=0)
@@ -367,7 +359,6 @@ def edition_on_type_pages(data, index):
 
 def edition_on_type_pages_extends_rest(data, index):
     data=filter_anonymous(data)
-    #filt=rest_edition(data,index,[0,1,2,3])
     file=edition_concrete(data,index,6)
     mediaWiki=edition_concrete(data,index,8)
     template=edition_concrete(data,index,10)
@@ -1111,9 +1102,9 @@ def generate_zaxis(max_range, index, months_range):
     before = pd.to_datetime(0)
     j = -1
     for i, v in months_range.iteritems(): 
-        i = list(i)#lsita con timestamp y bins
+        i = list(i)#lista con timestamp y bins
         current = i[0]#fecha
-        p = i[1]# untervalo
+        p = i[1]# intervalo
         p = p.split(')')[0]
         p = p.split('[')[1]
         p = p.split(',')
@@ -1138,7 +1129,6 @@ def bytes_diference(data):
     mains = users_registered[users_registered['page_ns'] == 0]
     order = mains.sort_index()
     group_by_page_id = order[['page_id', 'bytes']].groupby(['page_id'])
-    #order = group_by_page_id.apply(lambda x: (x.bytes-x.bytes.shift()).fillna(x.bytes)).to_frame('dif')
     group = group_by_page_id['bytes'].shift()
     order['bytes1'] = group
     order['dif'] = order['bytes'] - order['bytes1']
@@ -1161,33 +1151,22 @@ def edit_distributions_across_editors(data, index):
     max_range = max(list_range)
     mothly['range'] = pd.cut(mothly['num_contributions'], bins = list_range, right = False).astype(str)
     months_range = mothly.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range'])['num_editors'].sum()
-    wiki_by_metrics = generate_axis(max_range, index, months_range)
+    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
     return [index,list(range(0, 109)), wiki_by_metrics, 'Number of editors']
 
 def bytes_added_across_articles(data, index):
     order = bytes_diference(data)
     order = order[order['dif'] >= 0]
-    #order.loc[order['dif'] < 0, 'dif'] = 0
-    #order['dif'] = order['dif'].apply(lambda x: int(x))
-    #print(order[['bytes', 'bytes1', 'dif']])
-    #order = order.reset_index()
     max_dif_bytes = max(order['dif'])
     if max_dif_bytes > 1000:
         order.loc[order['dif'] > 1000, 'dif'] = 1000
         list_range = list(range(0, 1101, 100))
     else:
         list_range = list(range(0, max_dif_bytes+100, 100))
-    #min_dif_bytes = int(min(order['dif'])-1)
-    #round_max = (max_dif_bytes+100)
     
     max_range = max(list_range)
     order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
-    #list_range = list(range(min_dif_bytes, round_max, 100))
-
-    #order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
     months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    #min_dif_bytes_a = abs(min_dif_bytes+1)
-    #max_range = max_range + min_dif_bytes_a
     wiki_by_metrics = generate_zaxis(max_range, index, months_range)
     return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
 	
@@ -1195,27 +1174,16 @@ def bytes_deleted_across_articles(data, index):
     order = bytes_diference(data)
     order = order[order['dif'] < 0]
     order['dif'] = order['dif'].apply(lambda x: abs(x))
-    #order.loc[order['dif'] < 0, 'dif'] = 0
-    #order['dif'] = order['dif'].apply(lambda x: int(x))
-    #print(order[['bytes', 'bytes1', 'dif']])
-    #order = order.reset_index()
     max_dif_bytes = max(order['dif'])
     if max_dif_bytes > 1000:
         order.loc[order['dif'] > 1000, 'dif'] = 1000
         list_range = list(range(0, 1101, 100))
     else:
         list_range = list(range(0, max_dif_bytes+100, 100))
-    #min_dif_bytes = int(min(order['dif'])-1)
-    #round_max = (max_dif_bytes+100)
     
     max_range = max(list_range)
     order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
-    #list_range = list(range(min_dif_bytes, round_max, 100))
-
-    #order['range'] = pd.cut(order['dif'], bins = list_range).astype(str)
     months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    #min_dif_bytes_a = abs(min_dif_bytes+1)
-    #max_range = max_range + min_dif_bytes_a
     wiki_by_metrics = generate_zaxis(max_range, index, months_range)
     return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
 
@@ -1234,9 +1202,9 @@ def edition_on_pages(data, index):
     before = pd.to_datetime(0)
     j = -1
     for i, v in z.iteritems(): 
-        i = list(i)#lsita con timestamp y bins
+        i = list(i)#lista con timestamp y bins
         current = i[0]#fecha
-        p = i[1]# untervalo
+        p = i[1]# intervalo
         p = p.split(']')[0]
         p = p.split('(')[1]
         p = p.split(',')
@@ -1264,7 +1232,6 @@ def mask_first(x):
 
 def revision_on_pages(data, index):
     users_registered = filter_anonymous(data)
-    #without_first_edition = users_registered.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id']).apply(lambda x:x.iloc[1:,1:])
     groupTP = users_registered.groupby(['page_id'])['page_id'].transform(mask_first).astype(bool)
     without_first_edition = users_registered.loc[groupTP]
     z=without_first_edition.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id']).size().to_frame('revisiones').reset_index()
@@ -1342,15 +1309,14 @@ def distribution_editors_between_articles_edited_each_month(data, index):
     return [index,y_param,z_param, z_articles_by_y_editors, 'Number of articles']
     
 
-########################### % Of edits by % of users (accumulated and monthly) ###########################################
+########################### % Of edits by % of users (Total and monthly) ###########################################
 
 	
 def contributor_pctg_per_contributions_pctg(data, index):
     """
-    Function which calculates which % of contributors has contributed
+    Calculate which % of contributors has contributed
     in a 50%, 80%, 90% and 99% of the total wiki edits until each month.
     """
-
     data = filter_anonymous(data)
     format_data =data.groupby(['contributor_id']).apply(lambda x: x.groupby(pd.Grouper(key='timestamp', freq='MS')).size().to_frame('nEdits_cumulative').reindex(index, fill_value=0).cumsum()).reset_index()
     format_data['monthly_total_edits'] = format_data.groupby('timestamp')['nEdits_cumulative'].transform('sum')
@@ -1393,9 +1359,11 @@ def contributor_pctg_per_contributions_pctg(data, index):
     return[category_50, category_80, category_90, category_99, category_rest]
 	
 def contributor_pctg_per_contributions_pctg_per_month(data, index):
-
+    """
+    Calculate which % of contributors has contributed
+    in a 50%, 80%, 90% and 99% of the wiki edits.
+    """
     data = filter_anonymous(data)
-    #index = data.groupby(pd.Grouper(key='timestamp', freq='MS')).size().to_frame('months').index
     format_data = data.groupby(['contributor_id',pd.Grouper(key = 'timestamp', freq = 'MS')]).size().to_frame('medits').reset_index()
     format_data['monthly_total_edits'] = format_data.groupby('timestamp')['medits'].transform('sum')
     format_data['edits%'] = (format_data['medits'] / format_data['monthly_total_edits']) * 100
