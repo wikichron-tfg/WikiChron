@@ -76,9 +76,6 @@ def generate_classic_metrics():
     metrics.append(LineGraph('monthly_deleted_factoids', 'Deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids, "Number of deleted factoids in articles.", 'Deleted factoids'))
     metrics.append(LineGraph('monthly_added_factoids_acum', 'Total added factoids', MetricCategory.FACTOIDS, classic_stats.monthly_added_factoids_acum, "Total number of added factoids in articles.", 'Total added factoids'))
     metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total deleted factoids', MetricCategory.FACTOIDS, classic_stats.monthly_deleted_factoids_acum, "Total number of deleted factoids in articles.", 'Total deleted factoids'))
-    metrics.append(LineGraph('monthly_factoids', 'Number of factoids', MetricCategory.FACTOIDS, classic_stats.monthly_factoids, "Number of factoids in articles", 'Factoids'))
-    metrics.append(LineGraph('monthly_deleted_factoids_acum', 'Total number of factoids', MetricCategory.FACTOIDS, classic_stats.total_factoids, "Total number of factoids in articles", 'Total factoids'))
-    
     #EDIT_CONTENT
     metrics.append(LineGraph('img_by_months', 'Number of pictures', MetricCategory.EDIT_CONTENT, monowiki_stats.pic_by_months, 'Number of pictures', 'Number of pictures'))
     metrics.append(LineGraph('url_by_months', 'Number of urls', MetricCategory.EDIT_CONTENT, monowiki_stats.url_by_months, 'Number of urls', 'Number of urls'))

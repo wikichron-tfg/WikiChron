@@ -344,28 +344,21 @@ def surviving_new_editors(data, index):
 ########################################################################
 
 # Factoid Metrics
-def monthly_factoids(data, index):
-    data = filter_anonymous(data)
-    data = data[data['page_ns'] == 0]
-
-    data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
-    data['num_factoids'] = data['factoids'].apply(len)
-    return (data.groupby(pd.Grouper(key='timestamp', freq='MS'))['num_factoids'].sum())
-
-def total_factoids(data, index):
-    return (monthly_factoids(data, index)).cumsum()
     
 def monthly_deleted_factoids(data, index):
     data = filter_anonymous(data)
     data = data[data['page_ns'] == 0]
 
     data['factoids'] = data['factoids'].apply(str).apply(lambda x: x.split(',')).apply(set)
-    data['factoids_history'] = pd.concat([pd.Series([set()]), data['factoids'][:-1]]).reset_index(drop=True)
-    data['deleted_factoids'] = data['factoids_history'] - data['factoids']
-    idx = data.groupby('contributor_id').head(1).index
-    data.loc[idx, 'deleted_factoids'] = data.loc[idx, 'deleted_factoids'].apply(lambda x: set())
-    data.drop('factoids_history', axis=1, inplace=True)
-    data['number_deleted_factoids'] = data['deleted_factoids'].str.len()
+    #order data from latter to sooner revision of a same page:
+    data = data.sort_values(['page_id', 'timestamp'], ascending=[True, False])
+    #do the same operation as in the added factoids metric: on each row, we will have the erased factoids of the previous one
+    data['deleted_factoids'] = data.groupby('page_id').factoids.diff()
+    data['deleted_factoids'] = data.groupby('page_id')['deleted_factoids'].apply(lambda x: x.shift(-1))
+    data['deleted_factoids'] = data['deleted_factoids'].apply(lambda x: x if isinstance(x, set) else {})
+
+    data = data.sort_values(['page_id', 'timestamp'], ascending=[True, True])
+    data['number_deleted_factoids'] = data['deleted_factoids'].apply(len)
 
     return (data.groupby(pd.Grouper(key='timestamp', freq='MS'))['number_deleted_factoids'].sum())
 
