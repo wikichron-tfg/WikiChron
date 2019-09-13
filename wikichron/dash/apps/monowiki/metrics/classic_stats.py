@@ -354,7 +354,7 @@ def monthly_deleted_factoids(data, index):
     data = data.sort_values(['page_id', 'timestamp'], ascending=[True, False])
     #do the same operation as in the added factoids metric: on each row, we will have the erased factoids of the previous one
     data['deleted_factoids'] = data.groupby('page_id').factoids.diff()
-    data['deleted_factoids'] = data.groupby('page_id')['deleted_factoids'].apply(lambda x: x.shift(-1))
+    data['deleted_factoids'] = data.deleted_factoids.shift(-1).where(data.page_id.eq(data.page_id.shift(-1)))
     data['deleted_factoids'] = data['deleted_factoids'].apply(lambda x: x if isinstance(x, set) else {})
 
     data = data.sort_values(['page_id', 'timestamp'], ascending=[True, True])

@@ -36,7 +36,13 @@ class LineGraph(Metric):
         generate a LineGraph.
         Returns a graphs_list with one scatter graph.
         """
-                
+        #data = go.Scatter(
+                       # x=time_index,
+                       # y=self.data,
+                       # name=self.data.name
+                       # )
+        #fig = go.Figure(data=data)
+        #fig.update_yaxes(rangemode="tozero")
         return [go.Scatter(
                         x=time_index,
                         y=self.data,
