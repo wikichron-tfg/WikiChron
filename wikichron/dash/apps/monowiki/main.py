@@ -498,7 +498,8 @@ def bind_callbacks(app):
                                 #'legend': dict(x=.8, y=1.3),
                                 'title': metric.text,
                                 'barmode': 'stack',
-                                'xaxis': {'range': new_timerange, 'tickangle': -60}
+                                'xaxis': {'range': new_timerange, 'tickangle': -60},
+                                'yaxis': {'rangemode': 'tozero'}
                             }
                         },
                         config={
