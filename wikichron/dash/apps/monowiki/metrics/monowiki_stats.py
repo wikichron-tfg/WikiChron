@@ -1106,19 +1106,22 @@ def deleted_factoids_by_date_of_last_edit(data, index):
 
 
 ############################# HEATMAP METRICS ##############################################
-def generate_zaxis(max_range, index, months_range):
+def generate_zaxis(max_range, index, months_range, bins):
     graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
     for i, v in months_range.iteritems(): 
         i = list(i)#lista con timestamp y bins
         current = i[0]#fecha
-        p = i[1]# intervalo
-        p = p.split(')')[0]
-        p = p.split('[')[1]
-        p = p.split(',')
-        num_min = int(float(p[0]))
-        num_max = int(float(p[1]))
+        if bins == True:
+            p = i[1]# intervalo
+            p = p.split(')')[0]
+            p = p.split('[')[1]
+            p = p.split(',')
+            num_min = int(float(p[0]))
+            num_max = int(float(p[1]))
+        else:
+            num = i[1]
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
         if (resta > 31 and before != pd.to_datetime(0)):
@@ -1128,9 +1131,12 @@ def generate_zaxis(max_range, index, months_range):
         if (before != current):
             j = j +1
             before = current
-        graphs_list[j][num_min:num_max] = [v for i in range(num_min,num_max)]
-    wiki_by_metrics = np.transpose(graphs_list)
-    return wiki_by_metrics
+            if bins == True:
+                graphs_list[j][num_min:num_max] = [v for i in range(num_min,num_max)]
+            else:
+                graphs_list[j][num] = v
+    z_param = np.transpose(graphs_list)
+    return z_param
 
 def bytes_diference(data):
     data.set_index(data['timestamp'], inplace=True)
@@ -1160,8 +1166,8 @@ def edit_distributions_across_editors(data, index):
     max_range = max(list_range)
     mothly['range'] = pd.cut(mothly['num_contributions'], bins = list_range, right = False).astype(str)
     months_range = mothly.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range'])['num_editors'].sum()
-    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
-    return [index,list(range(0, 109)), wiki_by_metrics, 'Number of editors']
+    z_param = generate_zaxis(max_range, index, months_range, True)
+    return [index,list(range(0, 109)), z_param, 'Number of editors']
 
 def bytes_added_across_articles(data, index):
     order = bytes_diference(data)
@@ -1176,8 +1182,8 @@ def bytes_added_across_articles(data, index):
     max_range = max(list_range)
     order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
     months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
-    return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
+    z_param = generate_zaxis(max_range, index, months_range, True)
+    return [index, list(range(0, max_range-2)), z_param, 'Number of articles']
 	
 def bytes_deleted_across_articles(data, index):
     order = bytes_diference(data)
@@ -1193,10 +1199,8 @@ def bytes_deleted_across_articles(data, index):
     max_range = max(list_range)
     order['range'] = pd.cut(order['dif'], bins = list_range, right = False).astype(str)
     months_range = order.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    wiki_by_metrics = generate_zaxis(max_range, index, months_range)
-    return [index, list(range(0, max_range-2)), wiki_by_metrics, 'Number of articles']
-
-
+    z_param = generate_zaxis(max_range, index, months_range, True)
+    return [index, list(range(0, max_range-2)), z_param, 'Number of articles']
 
 def edition_on_pages(data, index):
     users_registered = filter_anonymous(data)
@@ -1205,34 +1209,10 @@ def edition_on_pages(data, index):
     round_max = (maxEditors+5)
     list_range = list(range(0, round_max+1, 5))
     max_range = max(list_range)
-    groupTP['range'] = pd.cut(groupTP['ediciones'], bins = list_range).astype(str)
+    groupTP['range'] = pd.cut(groupTP['ediciones'], bins = list_range, right = False).astype(str)
     z = groupTP.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    graphs_list = [[0 for j in range(max_range+1)] for i in range(len(index))]
-    before = pd.to_datetime(0)
-    j = -1
-    for i, v in z.iteritems(): 
-        i = list(i)#lista con timestamp y bins
-        current = i[0]#fecha
-        p = i[1]# intervalo
-        p = p.split(']')[0]
-        p = p.split('(')[1]
-        p = p.split(',')
-        num_min = int(float(p[0]))
-        num_max = int(float(p[1]))
-        num_min = (num_min+1)
-        num_max = (num_max)
-        resta = current - before
-        resta = int(resta / np.timedelta64(1, 'D'))
-        if (resta > 31 and before != pd.to_datetime(0)):
-            aux= int(resta / 31)
-            j = j + aux
-            resta = resta- (31 * aux)
-        if (before != current):
-            j = j +1
-            before = current
-        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
-    wiki_by_metrics = np.transpose(graphs_list);
-    return [index,list(range(maxEditors)),wiki_by_metrics, 'Number of pages']
+    z_param = generate_zaxis(max_range, index, z, True)
+    return [index, list(range(maxEditors)), z_param, 'Number of pages']
 
 def mask_first(x):
     result = np.ones_like(x)
@@ -1248,74 +1228,22 @@ def revision_on_pages(data, index):
     round_max = (maxRevision+5)
     list_range = list(range(0, round_max+1, 5))
     max_range = max(list_range)
-    z['range'] = pd.cut(z['revisiones'], bins = list_range).astype(str)
+    z['range'] = pd.cut(z['revisiones'], bins = list_range, right = False).astype(str)
     z = z.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
-    graphs_list = [[0 for j in range(max_range+1)] for i in range(len(index))]
-    before = pd.to_datetime(0)
-    j = -1
-    for i, v in z.iteritems(): 
-        i = list(i)#lsita con timestamp y bins
-        current = i[0]#fecha
-        p = i[1]# untervalo
-        p = p.split(']')[0]
-        p = p.split('(')[1]
-        p = p.split(',')
-        num_min = int(float(p[0]))
-        num_max = int(float(p[1]))
-        num_min = (num_min+1)
-        num_max = (num_max)
-        resta = current - before
-        resta = int(resta / np.timedelta64(1, 'D'))
-        if (resta > 31 and before != pd.to_datetime(0)):
-            aux= int(resta / 31)
-            j = j + aux
-            resta = resta- (31 * aux)
-        if (before != current):
-            j = j +1
-            before = current
-        graphs_list[j][num_min:num_max+1] = [v for i in range(num_min,num_max+1)]
-    wiki_by_metrics = np.transpose(graphs_list);
-    return [index,list(range(maxRevision)),wiki_by_metrics, 'Number of pages']
+    z_param = generate_zaxis(max_range, index, z, True)
+    return [index, list(range(maxRevision)), z_param, 'Number of pages']
 
 def distribution_editors_between_articles_edited_each_month(data, index):
     users_registered = filter_anonymous(data)
     #main namespace
     users_registered = users_registered[users_registered['page_ns']==0]
-
     users_per_article = users_registered.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id'])['contributor_id'].nunique().reset_index(name='editor_count')
-
     max_editors = max(users_per_article['editor_count'])
-
     z_articles_by_y_editors = users_per_article.groupby([pd.Grouper(key ='timestamp', freq='MS'),'editor_count']).size()
-
-
     #y parameter
     y_param = list(range(max_editors))
-
-    #z parameter
-    graphs_list = [[0 for j in range(max_editors+1)] for i in range(len(index))]
-    anterior = pd.to_datetime(0)
-    j = -1
-    for i, v in z_articles_by_y_editors.iteritems():
-        i = list(i)
-        actual = i[0]
-        num = i[1]
-        resta = actual - anterior
-        resta = int(resta / np.timedelta64(1, 'D'))
-        while (resta > 31 and anterior != pd.to_datetime(0)):
-            j = j+1
-            resta = resta-31
-        if (anterior != actual):
-            j = j +1
-            anterior = actual
-        if(j <= len(index)):
-            graphs_list[j][num] = v
-
-    z_param = []
-    for i in range(max_editors+1):
-            row = [graphs_list[j].pop(0) for j in range(len(graphs_list))]
-            z_param.append(row)  
-    return [index,y_param,z_param, z_articles_by_y_editors, 'Number of articles']
+    z_param = generate_zaxis(max_editors, index, z_articles_by_y_editors, False)
+    return [index,y_param,z_param, 'Number of articles']
     
 
 ########################### % Of edits by % of users (Total and monthly) ###########################################
@@ -1354,16 +1282,11 @@ def contributor_pctg_per_contributions_pctg(data, index):
     category_99 = (format_data[(format_data['edits%accum'] >=99)]).groupby('timestamp').head(1)
     category_99 = category_99.set_index(category_99['timestamp']).reindex(index).fillna(0)['count_acum']
     category_99 = (((category_99 / monthly_total_users)*100)/4).fillna(0)
-	
-    '''category_rest = (format_data[(format_data['edits%accum'] > 99)]).groupby('timestamp').head(1)
-    category_rest = category_rest.set_index(category_rest['timestamp']).reindex(index).fillna(0)['count_acum']
-    category_rest = ((category_rest / monthly_total_users)*100).fillna(0)'''
 
     category_50.name = "50% of edits"
     category_80.name = "80% of edits"
     category_90.name = "90% of edits"
     category_99.name = "99% of edits"
-    #category_rest.name = "100% of edits"
 
     return[category_50, category_80, category_90, category_99]
 	
@@ -1379,7 +1302,6 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
     format_data = format_data.sort_values(['timestamp', 'edits%'], ascending=[True, False])
     format_data['edits%accum'] = format_data.groupby('timestamp')['edits%'].cumsum()
     monthly_total_users = format_data.groupby('timestamp').size().reindex(index).fillna(0)
-    print(format_data)
     p = [1 for j in range(1, len(format_data.index)+1)]
     format_data['count'] = p
     format_data['count_acum'] = format_data.groupby('timestamp')['count'].cumsum()
@@ -1399,16 +1321,11 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
     category_99 = (format_data[(format_data['edits%accum'] >=99)]).groupby('timestamp').head(1)
     category_99 = category_99.set_index(category_99['timestamp']).reindex(index).fillna(0)['count_acum']
     category_99 = (((category_99 / monthly_total_users)*100)/4).fillna(0)
-	
-    '''category_rest = (format_data[(format_data['edits%accum'] > 99)]).groupby('timestamp').head(1)
-    category_rest = category_rest.set_index(category_rest['timestamp']).reindex(index).fillna(0)['count_acum']
-    category_rest = ((category_rest / monthly_total_users)*100).fillna(0)'''
 
     category_50.name = "50% of edits"
     category_80.name = "80% of edits"
     category_90.name = "90% of edits"
     category_99.name = "99% of edits"
-    #category_rest.name = "100% of edits"
 
     return[category_50, category_80, category_90, category_99]
 
