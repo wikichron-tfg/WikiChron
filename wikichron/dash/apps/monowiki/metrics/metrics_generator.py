@@ -137,9 +137,9 @@ def generate_monowiki_metrics():
     # heatmap metrics
     metrics.append(HeatMap('bytes_added_across_articles', 'Bytes added across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_added_across_articles, 'Number of articles (z axis) than added these bytes (y axis).', 'Bytes added across articles', ))
     metrics.append(HeatMap('bytes_deleted_across_articles', 'Bytes deleted across articles', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.bytes_deleted_across_articles, 'Number of articles (z axis) than deleted these bytes (y axis).', 'Bytes deleted across articles', ))
-    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, 'Distribution of editors across articles', 'Distribution of editors across articles'))
-    metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edition_on_pages, '', 'Edits on pages'))
-    metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.revision_on_pages, '', 'Revisions on pages'))
+    metrics.append(HeatMap('distribution_editors_between_articles_edited_each_month', 'Distribution of editors across articles', MetricCategory.ACTIVE_USER_DISTRIBUTION, monowiki_stats.distribution_editors_between_articles_edited_each_month, 'Number of articles (z axis) with the same number of editors (y axis)', 'Distribution of editors across articles'))
+    metrics.append(HeatMap('edition_on_pages', 'Edits on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.edition_on_pages, 'Number of pages (z axis) with these edits (y axis)', 'Edits on pages'))
+    metrics.append(HeatMap('revision_on_pages', 'Revisions on pages', MetricCategory.DISTRIBUTION_OF_EDITS, monowiki_stats.revision_on_pages, 'Number of pages (z axis) with these revisions (y axis)', 'Revisions on pages'))
 
     return metrics
 
