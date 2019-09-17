@@ -1205,14 +1205,13 @@ def bytes_deleted_across_articles(data, index):
 def edition_on_pages(data, index):
     users_registered = filter_anonymous(data)
     groupTP=users_registered.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id']).size().to_frame('ediciones').reset_index()
-    maxEditors=max(groupTP['ediciones'])
-    round_max = (maxEditors+5)
-    list_range = list(range(0, round_max+1, 5))
+    groupTP.loc[groupTP['ediciones'] > 100, 'ediciones'] = 100
+    list_range = list(range(0, 111, 10))
     max_range = max(list_range)
     groupTP['range'] = pd.cut(groupTP['ediciones'], bins = list_range, right = False).astype(str)
     z = groupTP.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
     z_param = generate_zaxis(max_range, index, z, True)
-    return [index, list(range(maxEditors)), z_param, 'Number of pages']
+    return [index, list(range(0, 109)), z_param, 'Number of pages']
 
 def mask_first(x):
     result = np.ones_like(x)
@@ -1224,14 +1223,13 @@ def revision_on_pages(data, index):
     groupTP = users_registered.groupby(['page_id'])['page_id'].transform(mask_first).astype(bool)
     without_first_edition = users_registered.loc[groupTP]
     z=without_first_edition.groupby([pd.Grouper(key ='timestamp', freq='MS'),'page_id']).size().to_frame('revisiones').reset_index()
-    maxRevision= max(z['revisiones'])
-    round_max = (maxRevision+5)
-    list_range = list(range(0, round_max+1, 5))
+    z.loc[z['revisiones'] > 100, 'revisiones'] = 100
+    list_range = list(range(0, 111, 10))
     max_range = max(list_range)
     z['range'] = pd.cut(z['revisiones'], bins = list_range, right = False).astype(str)
     z = z.groupby([pd.Grouper(key ='timestamp', freq='MS'), 'range']).size()
     z_param = generate_zaxis(max_range, index, z, True)
-    return [index, list(range(maxRevision)), z_param, 'Number of pages']
+    return [index, list(range(0, 109)), z_param, 'Number of pages']
 
 def distribution_editors_between_articles_edited_each_month(data, index):
     users_registered = filter_anonymous(data)
