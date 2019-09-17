@@ -1125,7 +1125,10 @@ def generate_zaxis(max_range, index, months_range, bins):
         resta = current - before
         resta = int(resta / np.timedelta64(1, 'D'))
         if (resta > 31 and before != pd.to_datetime(0)):
-            aux= int(resta / 31)
+            if resta == 62:
+                aux= math.floor(resta / 31) - 1
+            else:
+                aux= math.floor(resta / 31)
             j = j + aux
             resta = resta- (31 * aux)
         if (before != current):
