@@ -1107,7 +1107,7 @@ def deleted_factoids_by_date_of_last_edit(data, index):
 
 ############################# HEATMAP METRICS ##############################################
 def generate_zaxis(max_range, index, months_range, bins):
-    graphs_list = [[0 for j in range(max_range)] for i in range(len(index))]
+    graphs_list = [[0 for j in range(max_range+1)] for i in range(len(index))]
     before = pd.to_datetime(0)
     j = -1
     for i, v in months_range.iteritems(): 
@@ -1134,10 +1134,10 @@ def generate_zaxis(max_range, index, months_range, bins):
         if (before != current):
             j = j +1
             before = current
-            if bins == True:
-                graphs_list[j][num_min:num_max] = [v for i in range(num_min,num_max)]
-            else:
-                graphs_list[j][num] = v
+        if bins == True:
+            graphs_list[j][num_min:num_max] = [v for i in range(num_min,num_max)]
+        else:
+            graphs_list[j][num] = v
     z_param = np.transpose(graphs_list)
     return z_param
 
