@@ -112,6 +112,17 @@ def edits_user_talk(data, index):
     edits_talk_data = data[data['page_ns'] == 3]
     return (edits(edits_talk_data, index))
 
+def dormantWiki(data, index):
+    edition = data.groupby([pd.Grouper(key ='timestamp', freq='MS')]).size()
+    if edition.index is not None:
+        edition = edition.reindex(edition.index, fill_value=0)
+    edition=edition.to_frame('edition')
+    edition['edition1']=edition['edition'].shift() 
+    edition['edition2']=edition['edition1'].shift() 
+    edition['dormant'] =np.where((edition['edition'] == 0) & (edition['edition1'] == 0) & (edition['edition2'] == 0), 1, 0)
+    series = pd.Series(edition['dormant'], index = edition.index)
+    return series
+
 ########################################################################
 
 # Users

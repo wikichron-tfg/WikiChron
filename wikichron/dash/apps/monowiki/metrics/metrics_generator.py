@@ -36,7 +36,9 @@ def generate_classic_metrics():
     metrics.append(LineGraph('edits_user_talk', 'Edits in user talk', MetricCategory.EDITIONS, classic_stats.edits_user_talk, 'Editions to user discussion pages', 'Edits in user talk'))
     metrics.append(LineGraph('edits_accum', 'Total edits in pages', MetricCategory.EDITIONS, classic_stats.edits_accum, 'Total editions to any part of the wiki accumulated at every month', 'Total edits in pages'))
     metrics.append(LineGraph('edits_main_content_accum', 'Total edits in articles', MetricCategory.EDITIONS, classic_stats.edits_main_content_accum, 'Editions to articles accumulated at every month', 'Total edits in articles'))
+    metrics.append(LineGraph('dormantWiki', 'Active or dormant wiki', MetricCategory.EDITIONS, classic_stats.dormantWiki, 'The metric allows you to see the months in which a wiki is inactive', 'Active or dormant wiki'))    
 
+	
     # Users
     metrics.append(LineGraph('users_new', 'New users', MetricCategory.USERS, classic_stats.users_new, 'Users who have made at least one edition grouped by the month they did their first edit.', 'New users'))
     metrics.append(LineGraph('users_new_registered', 'New registered users', MetricCategory.USERS, classic_stats.users_new_registered, 'New users registration per month who have made at least one edition.', 'New registered users'))
