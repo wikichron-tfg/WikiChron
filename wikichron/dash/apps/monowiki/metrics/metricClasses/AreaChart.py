@@ -52,7 +52,7 @@ class AreaChart(Metric):
                                 hoverinfo = 'x+y',
                                 mode = 'lines',
                                 line=dict(width=0.5),
-                                stackgroup='one',
-                                name=submetric_data.name
+                                name=submetric_data.name,
+                                fill='tonexty'
                                 )
         return graphs_list
