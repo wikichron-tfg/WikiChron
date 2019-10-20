@@ -1264,6 +1264,7 @@ def contributor_pctg_per_contributions_pctg(data, index):
     format_data['edits%accum'] = format_data.groupby('timestamp')['edits%'].cumsum()
     format_data = format_data[format_data['edits%'] > 0]
     monthly_total_users = format_data.groupby('timestamp').size().reindex(index).fillna(0)
+    monthly_total_users = monthly_total_users[monthly_total_users >= 10].reindex(index)
 
     p = [1 for j in range(1, len(format_data.index)+1)]
     format_data['count'] = p
@@ -1312,19 +1313,19 @@ def contributor_pctg_per_contributions_pctg_per_month(data, index):
 
     category_50 = (format_data[format_data['edits%accum'] >= 50]).groupby('timestamp').head(1)
     category_50 = category_50.set_index(category_50['timestamp']).reindex(index).fillna(0)['count_acum']
-    category_50= (((category_50 / monthly_total_users)*100))
+    category_50= (((category_50 / monthly_total_users)*100)).fillna(0)
 
     category_80 = (format_data[(format_data['edits%accum'] >=80)]).groupby('timestamp').head(1)
     category_80 = category_80.set_index(category_80['timestamp']).reindex(index).fillna(0)['count_acum']
-    category_80 = (((category_80 / monthly_total_users)*100))
+    category_80 = (((category_80 / monthly_total_users)*100)).fillna(0)
 
     category_90 = (format_data[(format_data['edits%accum'] >=90)]).groupby('timestamp').head(1)
     category_90 = category_90.set_index(category_90['timestamp']).reindex(index).fillna(0)['count_acum']
-    category_90 = (((category_90 / monthly_total_users)*100))
+    category_90 = (((category_90 / monthly_total_users)*100)).fillna(0)
 
     category_99 = (format_data[(format_data['edits%accum'] >=99)]).groupby('timestamp').head(1)
     category_99 = category_99.set_index(category_99['timestamp']).reindex(index).fillna(0)['count_acum']
-    category_99 = (((category_99 / monthly_total_users)*100))
+    category_99 = (((category_99 / monthly_total_users)*100)).fillna(0)
 
     category_50.name = "50% of edits"
     category_80.name = "80% of edits"
